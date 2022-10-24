@@ -60,6 +60,7 @@ jobs:
         context: images/base
         file: ./images/base/${{ matrix.platform.suffix }}.Dockerfile
         platforms: linux/${{ matrix.platform.suffix }}
+        push: true
         tags: |
           ghcr.io/auguwu/coder-images/base:latest-${{ matrix.platform.suffix }}
 
