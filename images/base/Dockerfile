@@ -19,7 +19,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-FROM --platform=arm64 lopsided/archlinux:devel
+FROM --platform=$BUILDPLATFORM ubuntu:jammy
 
 # For now, this will be `noel` as the user. You can extend this to be whatever you like.
 ENV USERNAME=noel \
@@ -27,32 +27,32 @@ ENV USERNAME=noel \
   USER_GID=1000
 
 # Install needed packages
-RUN pacman -Syu --noconfirm && pacman -Sy --noconfirm sudo git curl neofetch git-lfs ca-certificates unzip zip bash
+RUN DEBIAN_FRONTEND=noninteractive sudo apt install -y sudo git curl neofetch git-lfs ca-certificates unzip zip bash
 
 # Setup the user environment
 RUN groupadd -g ${USER_GID} ${USERNAME} && \
-  useradd -u ${USER_UID} -g ${USER_GID} -m -s /bin/bash -d /home/${USERNAME} ${USERNAME} && \
+  useradd -rm -d /home/${USERNAME} -s /bin/bash -g ${USERNAME} -u ${USER_UID} ${USERNAME} && \
   echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME && \
-  chown ${USER_UID}:${USER_GID} "/home/${USERNAME}"
+  chown ${USER_UID}:${USER_GID} /home/${USERNAME}
 
 # Configure git-lfs
-RUN sudo git lfs install --system
+RUN git lfs install --system
 
 # Configure the GitHub CLI
 ENV GITHUB_CLI_VERSION="2.18.1"
-RUN curl -L -o /tmp/gh.tar.gz https://github.com/cli/cli/releases/download/v${GITHUB_CLI_VERSION}/gh_${GITHUB_CLI_VERSION}_linux_arm64.tar.gz && \
+RUN curl -L -o /tmp/gh.tar.gz https://github.com/cli/cli/releases/download/v${GITHUB_CLI_VERSION}/gh_${GITHUB_CLI_VERSION}_linux_amd64.tar.gz && \
   mkdir -p /opt/github/cli && \
   tar -xf /tmp/gh.tar.gz -C /opt/github/cli
 
 # Configure the Coder CLI
 ENV CODER_CLI_VERSION="0.10.2"
-RUN curl -L -o /tmp/coder.tar.gz https://github.com/coder/coder/releases/download/v${CODER_CLI_VERSION}/coder_${CODER_CLI_VERSION}_linux_arm64.tar.gz && \
+RUN curl -L -o /tmp/coder.tar.gz https://github.com/coder/coder/releases/download/v${CODER_CLI_VERSION}/coder_${CODER_CLI_VERSION}_linux_amd64.tar.gz && \
   mkdir -p /opt/coder/cli && \
   tar -xf /tmp/coder.tar.gz -C /opt/coder/cli
 
 # Configure Terraform
 ENV TERRAFORM_VERSION="1.3.3"
-RUN curl -L -o /tmp/terraform.tar.gz https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_arm64.zip && \
+RUN curl -L -o /tmp/terraform.tar.gz https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip && \
   mkdir -p /opt/hashicorp/terraform && \
   unzip -qd /opt/hashicorp/terraform /tmp/terraform.tar.gz
 
@@ -65,4 +65,4 @@ WORKDIR /home/${USERNAME}
 # Set paths to coder, gh, and terraform
 RUN echo "export PATH=\"\$PATH:/opt/coder/cli\"" >> /home/${USERNAME}/.bashrc
 RUN echo "export PATH=\"\$PATH:/opt/hashicorp/terraform\"" >> /home/${USERNAME}/.bashrc
-RUN echo "export PATH=\"\$PATH:/opt/github/cli/gh_${GITHUB_CLI_VERSION}_linux_arm64/bin\"" >> /home/${USERNAME}/.bashrc
+RUN echo "export PATH=\"\$PATH:/opt/github/cli/gh_${GITHUB_CLI_VERSION}_linux_amd64/bin\"" >> /home/${USERNAME}/.bashrc
