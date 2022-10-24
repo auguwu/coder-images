@@ -27,7 +27,9 @@ ENV USERNAME=noel \
   USER_GID=1000
 
 # Install needed packages
-RUN DEBIAN_FRONTEND=noninteractive apt install -y sudo git curl neofetch git-lfs ca-certificates unzip zip bash
+RUN DEBIAN_FRONTEND=noninteractive apt update && \
+  DEBIAN_FRONTEND=noninteractive apt upgrade && \
+  DEBIAN_FRONTEND=noninteractive apt install -y sudo git curl neofetch git-lfs ca-certificates unzip zip bash
 
 # Setup the user environment
 RUN groupadd -g ${USER_GID} ${USERNAME} && \
