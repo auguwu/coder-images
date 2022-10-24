@@ -25,25 +25,14 @@ on:
   release:
     types: [published]
 jobs:
-  release:
-    name: Release Pipeline
-    runs-on: ${{ matrix.platform.runner }}
-    strategy:
-      fail-fast: true
-      matrix:
-        platform:
-          - runner: ubuntu-latest
-            suffix: amd64
-            use-action: true
-          - runner: self-hosted
-            suffix: arm64
-            use-action: false
+  base-x64:
+    name: Release Pipeline [base image (linux/amd64)]
+    runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
 
     - name: Setup Docker Buildx
-      if: ${{ matrix.platform.use-action == true }}
       uses: docker/setup-buildx-action@v2
 
     - name: Login into GitHub Container Registry
@@ -53,26 +42,40 @@ jobs:
         username: auguwu
         password: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: "[images/base] Build and push for platform linux/${{ matrix.platform.suffix }}"
+    - name: Build and push
       uses: docker/build-push-action@v3
-      if: ${{ matrix.platform.use-action == true }}
       with:
         context: images/base
-        file: ./images/base/${{ matrix.platform.suffix }}.Dockerfile
-        platforms: linux/${{ matrix.platform.suffix }}
+        file: ./images/base/amd64.Dockerfile
+        platforms: linux/amd64
         push: true
         tags: |
-          ghcr.io/auguwu/coder-images/base:latest-${{ matrix.platform.suffix }}
+          ghcr.io/auguwu/coder-images/base:latest-amd64
 
-    # This is needed because Buildx won't work on the self-hosted runner for some reason?
-    - name: "[images/base] Build and push for platform linux/${{ matrix.platform.suffix }} (2nd option)"
-      if: ${{ matrix.platform.use-action == false }}
-      run: docker build ./images/base -f ./images/base/${{ matrix.platform.suffix }}.Dockerfile -t ghcr.io/auguwu/coder-images/base:latest-${{ matrix.platform.suffix }} --platform linux/${{ matrix.platform.suffix }} && docker push ghcr.io/auguwu/coder-images/base:latest-${{ matrix.platform.suffix }}
+  base-arm64:
+    name: Release Pipeline [base image (linux/amd64)]
+    runs-on: self-hosted
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-  manifests:
+    - name: Login into GitHub Container Registry
+      uses: docker/login-action@v2
+      with:
+        registry: ghcr.io
+        username: auguwu
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Build
+      run: docker build ./images/base -f ./images/base/arm64.Dockerfile -t ghcr.io/auguwu/coder-images/base:latest-arm64 --platform linux/arm64/v8
+
+    - name: Push
+      run: docker push ghcr.io/auguwu/coder-images/base:latest-arm64
+
+  base-manifests:
     name: Apply Docker manifests
     runs-on: ubuntu-latest
-    needs: [release]
+    needs: [base-x64, base-arm64]
     steps:
     - name: Login into GitHub Container Registry
       uses: docker/login-action@v2
