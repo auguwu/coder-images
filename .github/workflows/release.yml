@@ -21,6 +21,7 @@
 
 name: Release Pipeline
 on:
+  workflow_dispatch:
   release:
     types: [published]
 jobs:
@@ -33,16 +34,13 @@ jobs:
         platform:
           - runner: ubuntu-latest
             suffix: amd64
-            buildx: true
           - runner: self-hosted
             suffix: arm64
-            buildx: false
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
 
     - name: Setup Docker Buildx
-      if: ${{ matrix.platform.buildx == true }}
       uses: docker/setup-buildx-action@v2
 
     - name: Login into GitHub Container Registry
