@@ -19,7 +19,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-FROM --platform=$BUILDPLATFORM ubuntu:jammy
+FROM ubuntu:jammy
 
 # For now, this will be `noel` as the user. You can extend this to be whatever you like.
 ENV USERNAME=noel \
