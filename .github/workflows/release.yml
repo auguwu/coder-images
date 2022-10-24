@@ -53,7 +53,7 @@ jobs:
           ghcr.io/auguwu/coder-images/base:latest-amd64
 
   base-arm64:
-    name: Release Pipeline [base image (linux/amd64)]
+    name: Release Pipeline [base image (linux/arm64)]
     runs-on: self-hosted
     steps:
     - name: Checkout repository
