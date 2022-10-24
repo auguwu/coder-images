@@ -56,7 +56,7 @@ jobs:
       uses: docker/build-push-action@v3
       with:
         context: images/base
-        file: ${{ matrix.platform.suffix }}.Dockerfile
+        file: ./images/base/${{ matrix.platform.suffix }}.Dockerfile
         platforms: linux/${{ matrix.platform.suffix }}
         tags: |
           ghcr.io/auguwu/coder-images/base:latest-${{ matrix.platform.suffix }}
