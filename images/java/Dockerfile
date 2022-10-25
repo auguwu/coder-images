@@ -34,18 +34,16 @@ ENV MAVEN_VERSION="3.8.6"
 # Install packages!
 RUN set -eux; \
   arch="$(dpkg --print-architecture)"; \
+  GRADLE_DOWNLOAD_URL="https://services.gradle.org/distributions/gradle-7.5.1-all.zip"; \
+  MAVEN_DOWNLOAD_URL="https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz"; \
   case "${arch}" in \
     aarch64|arm64) \
       ARCH="arm64"; \
-      TEMURIN_DOWNLOAD_URL="" \
-      GRADLE_DOWNLOAD_URL="" \
-      MAVEN_DOWNLOAD_URL="" \
+      TEMURIN_DOWNLOAD_URL="https://github.com/adoptium/temurin18-binaries/releases/download/jdk-${JDK_VERSION}+1/OpenJDK18U-jdk_arm_linux_hotspot_${JDK_VERSION}_1.tar.gz" \
       ;; \
     x86_64|amd64) \
       ARCH="amd64"; \
       TEMURIN_DOWNLOAD_URL="https://github.com/adoptium/temurin18-binaries/releases/download/jdk-${JDK_VERSION}+1/OpenJDK18U-jdk_x64_linux_hotspot_${JDK_VERSION}_1.tar.gz" \
-      GRADLE_DOWNLOAD_URL="https://services.gradle.org/distributions/gradle-7.5.1-all.zip" \
-      MAVEN_DOWNLOAD_URL="https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz" \
       ;; \
   esac; \
   mkdir -p /opt/java/jdk; \
