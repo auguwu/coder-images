@@ -39,26 +39,55 @@ RUN groupadd -g ${USER_GID} ${USERNAME} && \
 # Configure git-lfs
 RUN git lfs install --system
 
-# Configure the GitHub CLI
+# stuff here
 ENV GITHUB_CLI_VERSION="2.18.1"
-RUN curl -L -o /tmp/gh.tar.gz https://github.com/cli/cli/releases/download/v${GITHUB_CLI_VERSION}/gh_${GITHUB_CLI_VERSION}_linux_amd64.tar.gz && \
-  mkdir -p /opt/github/cli && \
-  tar -xf /tmp/gh.tar.gz -C /opt/github/cli
-
-# Configure the Coder CLI
-ENV CODER_CLI_VERSION="0.10.2"
-RUN curl -L -o /tmp/coder.tar.gz https://github.com/coder/coder/releases/download/v${CODER_CLI_VERSION}/coder_${CODER_CLI_VERSION}_linux_amd64.tar.gz && \
-  mkdir -p /opt/coder/cli && \
-  tar -xf /tmp/coder.tar.gz -C /opt/coder/cli
-
-# Configure Terraform
+ENV CODER_CLI_VERSION="0.11.0"
 ENV TERRAFORM_VERSION="1.3.3"
-RUN curl -L -o /tmp/terraform.tar.gz https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip && \
-  mkdir -p /opt/hashicorp/terraform && \
-  unzip -qd /opt/hashicorp/terraform /tmp/terraform.tar.gz
+
+# Get current architecture and download software here
+# also this looks like shit, i know!
+RUN set -eux; \
+  arch="$(dpkg --print-architecture)"; \
+  case "${arch}" in \
+    aarch64|arm64) \
+      ARCH="arm64" \
+      GH_DOWNLOAD_URL="https://github.com/cli/cli/releases/download/v${GITHUB_CLI_VERSION}/gh_${GITHUB_CLI_VERSION}_linux_arm64.tar.gz" \
+      CD_DOWNLOAD_URL="https://github.com/coder/coder/releases/download/v${CODER_CLI_VERSION}/coder_${CODER_CLI_VERSION}_linux_arm64.tar.gz" \
+      TF_DOWNLOAD_URL="https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_arm64.zip" \
+      ;;           \
+    x86_64|amd64)  \
+      ARCH="amd64" \
+      GH_DOWNLOAD_URL="https://github.com/cli/cli/releases/download/v${GITHUB_CLI_VERSION}/gh_${GITHUB_CLI_VERSION}_linux_amd64.tar.gz" \
+      CD_DOWNLOAD_URL="https://github.com/coder/coder/releases/download/v${CODER_CLI_VERSION}/coder_${CODER_CLI_VERSION}_linux_amd64.tar.gz" \
+      TF_DOWNLOAD_URL="https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" \
+      ;;           \
+    *)             \
+      echo "Unsupported architecture [${arch}]" \
+      exit 1       \
+      ;;           \
+  esac;            \
+  mkdir -p /opt/coder/cli;             \
+  mkdir -p /opt/github/cli;            \
+  mkdir -p /opt/hashicorp/terraform;            \
+  curl -L -o /tmp/gh.tar.gz ${GH_DOWNLOAD_URL}; \
+  tar -xf /tmp/gh.tar.gz -C /opt/github/cli;    \
+  curl -L -o /tmp/coder.tar.gz ${CD_DOWNLOAD_URL}; \
+  tar -xf /tmp/coder.tar.gz -C /opt/coder/cli;    \
+  curl -L -o /tmp/terraform.zip ${TF_DOWNLOAD_URL}; \
+  unzip -qd /opt/hashicorp/terraform /tmp/terraform.zip; \
+  mkdir /opt/github/_cli; \
+  cp -r /opt/github/cli/gh_${GITHUB_CLI_VERSION}_linux_${ARCH} /opt/github/_cli;
+
+# Do some cleanup for the GitHub CLI path
+RUN set -eux; \
+  ls /opt/github; \
+  cp /opt/github/_cli/**/LICENSE /opt/github/cli/LICENSE; \
+  cp -R /opt/github/_cli/**/bin /opt/github/cli/bin; \
+  cp -R /opt/github/_cli/**/share /opt/github/cli/share; \
+  rm -rf /opt/github/_cli;
 
 # Cleanup temporary distributions
-RUN rm /tmp/*.tar.gz
+RUN rm /tmp/*.tar.gz /tmp/*.zip
 
 USER ${USERNAME}
 WORKDIR /home/${USERNAME}
@@ -66,4 +95,4 @@ WORKDIR /home/${USERNAME}
 # Set paths to coder, gh, and terraform
 RUN echo "export PATH=\"\$PATH:/opt/coder/cli\"" >> /home/${USERNAME}/.bashrc
 RUN echo "export PATH=\"\$PATH:/opt/hashicorp/terraform\"" >> /home/${USERNAME}/.bashrc
-RUN echo "export PATH=\"\$PATH:/opt/github/cli/gh_${GITHUB_CLI_VERSION}_linux_amd64/bin\"" >> /home/${USERNAME}/.bashrc
+RUN echo "export PATH=\"\$PATH:/opt/github/cli/bin\"" >> /home/${USERNAME}/.bashrc

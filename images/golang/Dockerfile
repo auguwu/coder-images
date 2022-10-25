@@ -19,19 +19,35 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-FROM ghcr.io/auguwu/coder-images/base:latest
+FROM ghcr.io/auguwu/coder-images/base
 
 ENV USERNAME=noel
 
 # Run as root so we don't have to repeat sudo
 USER root
 
+# Put versions in environment variables
 ENV GOLANG_VERSION="1.19.2"
-RUN curl -L -o /tmp/golang.tar.gz https://go.dev/dl/go${GOLANG_VERSION}linux-amd64.tar.gz && \
-  mkdir -p /opt/golang && \
-  tar -xf /tmp/golang.tar.gz -C /opt/golang
+ENV GORELEASER_VERSION="1.12.3"
+ENV GOLANGCI_VERSION="1.50.1"
 
-RUN rm /tmp/golang.tar.gz
+# Install packages here.
+RUN set -eux; \
+  arch="$(dpkg --print-architecture)"; \
+  case "${arch}" in \
+    aarch64|arm64) \
+      ARCH="arm64"; \
+      GO_DOWNLOAD_URL="https://go.dev/dl/go${GOLANG_VERSION}linux-arm64.tar.gz" \
+      GORELEASER_DOWNLOAD_URL="https://github.com/goreleaser/goreleaser/releases/download/v${GORELEASER_VERSION}/goreleaser_Linux_arm64.tar.gz" \
+      GOLANGCI_DOWNLOAD_URL="https://github.com/golangci/golangci-lint/releases/download/v${GOLANG_VERSION}/golangci-lint-${GOLANGCI_VERSION}-linux-arm64.tar.gz" \
+      ;; \
+    x86_64|amd64) \
+      ARCH="amd64"; \
+      GO_DOWNLOAD_URL="https://go.dev/dl/go${GOLANG_VERSION}linux-amd64.tar.gz" \
+      GORELEASER_DOWNLOAD_URL="https://github.com/goreleaser/goreleaser/releases/download/v${GORELEASER_VERSION}/goreleaser_Linux_amd64.tar.gz" \
+      GOLANGCI_DOWNLOAD_URL="https://github.com/golangci/golangci-lint/releases/download/v${GOLANG_VERSION}/golangci-lint-${GOLANGCI_VERSION}-linux-amd64.tar.gz" \
+      ;; \
+  esac;
+
+#RUN rm /tmp/*.tar.gz
 USER ${USERNAME}
-
-RUN echo "export PATH=\"\$PATH:/opt/golang\"" >> /home/${USERNAME}/.bashrc

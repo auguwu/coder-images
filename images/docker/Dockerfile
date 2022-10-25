@@ -19,19 +19,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-FROM ghcr.io/auguwu/coder-images/base:latest
+# We will build Moby from source, because why not!
+FROM ghcr.io/auguwu/coder-images/golang AS build
 
-ENV USERNAME=noel
-
-# Run as root so we don't have to repeat sudo
 USER root
 
-ENV GOLANG_VERSION="1.19.2"
-RUN curl -L -o /tmp/golang.tar.gz https://go.dev/dl/go${GOLANG_VERSION}linux-arm64.tar.gz && \
-  mkdir -p /opt/golang && \
-  tar -xf /tmp/golang.tar.gz -C /opt/golang
-
-RUN rm /tmp/golang.tar.gz
-USER ${USERNAME}
-
-RUN echo "export PATH=\"\$PATH:/opt/golang\"" >> /home/${USERNAME}/.bashrc
+# Now, we will bring in the built source code in here.
+FROM ghcr.io/auguwu/coder-images/base
