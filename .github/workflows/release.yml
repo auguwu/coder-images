@@ -28,8 +28,8 @@ jobs:
   release-x64:
     name: Release Pipeline [${{ matrix.image }} image (linux/amd64)]
     runs-on: ubuntu-latest
-    matrix:
-      strategy:
+    strategy:
+      matrix:
         image: [base, java, golang]
     steps:
     - name: Checkout repository
@@ -58,8 +58,8 @@ jobs:
   release-arm64:
     name: Release Pipeline [${{ matrix.image }} (linux/arm64)]
     runs-on: self-hosted
-    matrix:
-      strategy:
+    strategy:
+      matrix:
         image: [base, java, golang]
     steps:
     - name: Checkout repository
@@ -82,8 +82,9 @@ jobs:
     name: Apply Docker manifests [${{ matrix.image }} image]
     runs-on: ubuntu-latest
     needs: [release-x64, release-arm64]
-    matrix:
-      image: [base, java, golang]
+    strategy:
+      matrix:
+        image: [base, java, golang]
     steps:
     - name: Login into GitHub Container Registry
       uses: docker/login-action@v2
