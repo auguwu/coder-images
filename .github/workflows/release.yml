@@ -25,9 +25,12 @@ on:
   release:
     types: [published]
 jobs:
-  base-x64:
-    name: Release Pipeline [base image (linux/amd64)]
+  release-x64:
+    name: Release Pipeline [${{ matrix.image }} image (linux/amd64)]
     runs-on: ubuntu-latest
+    matrix:
+      strategy:
+        image: [base, java, golang]
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
@@ -45,16 +48,19 @@ jobs:
     - name: Build and push
       uses: docker/build-push-action@v3
       with:
-        context: images/base
-        file: ./images/base/Dockerfile
+        context: images/${{ matrix.image }}
+        file: ./images/${{ matrix.image }}/Dockerfile
         platforms: linux/amd64
         push: true
         tags: |
-          ghcr.io/auguwu/coder-images/base:latest-amd64
+          ghcr.io/auguwu/coder-images/${{ matrix.image }}:latest-amd64
 
-  base-arm64:
-    name: Release Pipeline [base image (linux/arm64)]
+  release-arm64:
+    name: Release Pipeline [${{ matrix.image }} (linux/arm64)]
     runs-on: self-hosted
+    matrix:
+      strategy:
+        image: [base, java, golang]
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
@@ -67,32 +73,17 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Build
-      run: docker build ./images/base -f ./images/base/Dockerfile -t ghcr.io/auguwu/coder-images/base:latest-arm64 --platform linux/arm64/v8
+      run: docker build ./images/${{ matrix.image }} -f ./images/${{ matrix.image }}/Dockerfile -t ghcr.io/auguwu/coder-images/${{ matrix.image }}:latest-arm64 --platform linux/arm64/v8
 
     - name: Push
-      run: docker push ghcr.io/auguwu/coder-images/base:latest-arm64
-
-  # extra-images-x64:
-  #   name: Build image [linux/amd64, ${{ matrix.key }}]
-  #   runs-on: ubuntu-latest
-  #   strategy:
-  #     matrix:
-  #       key: [golang, docker, intellij, java, node, rust]
-  #   steps:
-  #   - name: Checkout repository
-  #     uses: actions/checkout@v3
-
-  #   - name: Login into GitHub Container Registry
-  #     uses: docker/login-action@v2
-  #     with:
-  #       registry: ghcr.io
-  #       username: auguwu
-  #       password: ${{ secrets.GITHUB_TOKEN }}
+      run: docker push ghcr.io/auguwu/coder-images/${{ matrix.image }}:latest-arm64
 
   base-manifests:
-    name: Apply Docker manifests
+    name: Apply Docker manifests [${{ matrix.image }} image]
     runs-on: ubuntu-latest
-    needs: [base-x64, base-arm64]
+    needs: [release-x64, release-arm64]
+    matrix:
+      image: [base, java, golang]
     steps:
     - name: Login into GitHub Container Registry
       uses: docker/login-action@v2
@@ -105,7 +96,7 @@ jobs:
       uses: Noelware/docker-manifest-action@master
       with:
         push: true
-        base-image: ghcr.io/auguwu/coder-images/base:latest
+        base-image: ghcr.io/auguwu/coder-images/${{ matrix.image }}:latest
         extra-images: |
-          ghcr.io/auguwu/coder-images/base:latest-amd64,
-          ghcr.io/auguwu/coder-images/base:latest-arm64
+          ghcr.io/auguwu/coder-images/${{ matrix.image }}:latest-amd64,
+          ghcr.io/auguwu/coder-images/${{ matrix.image }}:latest-arm64
