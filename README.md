@@ -5,9 +5,10 @@ This repository contains the templates and Docker images I built that is optimiz
 
 ## Docker Images
 ### `ghcr.io/auguwu/coder-images/base:latest`
-This is the base image that is based off **Arch Linux** since I am most confident of using Arch when developing.
+This is the base image that is based off **Ubuntu** since that's what I feel the most people are comfortable with Debian-based systems.
 
 This installs the following packages:
+- Terraform CLI
 - GitHub CLI
 - Coder CLI
 

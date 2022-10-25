@@ -43,11 +43,20 @@ RUN set -eux; \
       ;; \
     x86_64|amd64) \
       ARCH="amd64"; \
-      GO_DOWNLOAD_URL="https://go.dev/dl/go${GOLANG_VERSION}linux-amd64.tar.gz" \
+      GO_DOWNLOAD_URL="https://go.dev/dl/go${GOLANG_VERSION}.linux-amd64.tar.gz" \
       GORELEASER_DOWNLOAD_URL="https://github.com/goreleaser/goreleaser/releases/download/v${GORELEASER_VERSION}/goreleaser_Linux_amd64.tar.gz" \
       GOLANGCI_DOWNLOAD_URL="https://github.com/golangci/golangci-lint/releases/download/v${GOLANG_VERSION}/golangci-lint-${GOLANGCI_VERSION}-linux-amd64.tar.gz" \
       ;; \
-  esac;
+  esac; \
+  mkdir -p /opt/golang/go; \
+  mkdir -p /opt/tools/goreleaser; \
+  mkdir -p /opt/tools/golangci; \
+  curl -L -o /tmp/golang.tar.gz ${GO_DOWNLOAD_URL}; \
+  tar -xf /tmp/golang.tar.gz -C /opt/golang/go; \
+  curl -L -o /tmp/goreleaser.tar.gz ${GORELEASER_DOWNLOAD_URL}; \
+  tar -xf /tmp/goreleaser.tar.gz -C /opt/tools/goreleaser; \
+  curl -L -o /tmp/golangci.tar.gz ${GOLANGCI_DOWNLOAD_URL}; \
+  tar -xf /tmp/golangci.tar.gz -C /opt/tools/golangci; \
+  rm /tmp/*.tar.gz;
 
-#RUN rm /tmp/*.tar.gz
 USER ${USERNAME}
