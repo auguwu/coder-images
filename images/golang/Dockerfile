@@ -37,7 +37,7 @@ RUN set -eux; \
   case "${arch}" in \
     aarch64|arm64) \
       ARCH="arm64"; \
-      GO_DOWNLOAD_URL="https://go.dev/dl/go${GOLANG_VERSION}linux-arm64.tar.gz" \
+      GO_DOWNLOAD_URL="https://go.dev/dl/go${GOLANG_VERSION}.linux-arm64.tar.gz" \
       GORELEASER_DOWNLOAD_URL="https://github.com/goreleaser/goreleaser/releases/download/v${GORELEASER_VERSION}/goreleaser_Linux_arm64.tar.gz" \
       GOLANGCI_DOWNLOAD_URL="https://github.com/golangci/golangci-lint/releases/download/v${GOLANG_VERSION}/golangci-lint-${GOLANGCI_VERSION}-linux-arm64.tar.gz" \
       ;; \
