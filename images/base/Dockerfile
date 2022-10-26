@@ -28,7 +28,8 @@ ENV USERNAME=noel \
 
 # Install needed packages
 RUN DEBIAN_FRONTEND=noninteractive apt update && \
-  DEBIAN_FRONTEND=noninteractive apt install -y sudo git curl neofetch git-lfs ca-certificates unzip zip bash
+  DEBIAN_FRONTEND=noninteractive apt upgrade -y && \
+  DEBIAN_FRONTEND=noninteractive apt install -y sudo git curl neofetch git-lfs ca-certificates unzip zip bash vim nano
 
 # Setup the user environment
 RUN groupadd -g ${USER_GID} ${USERNAME} && \
@@ -43,6 +44,8 @@ RUN git lfs install --system
 ENV GITHUB_CLI_VERSION="2.18.1"
 ENV CODER_CLI_VERSION="0.11.0"
 ENV TERRAFORM_VERSION="1.3.3"
+ENV KUBECTL_VERSION="1.25.3"
+ENV HELM_VERSION="3.10.1"
 
 # Get current architecture and download software here
 # also this looks like shit, i know!
@@ -50,45 +53,35 @@ RUN set -eux; \
   arch="$(dpkg --print-architecture)"; \
   case "${arch}" in \
     aarch64|arm64) \
-      ARCH="arm64" \
-      GH_DOWNLOAD_URL="https://github.com/cli/cli/releases/download/v${GITHUB_CLI_VERSION}/gh_${GITHUB_CLI_VERSION}_linux_arm64.tar.gz" \
-      CD_DOWNLOAD_URL="https://github.com/coder/coder/releases/download/v${CODER_CLI_VERSION}/coder_${CODER_CLI_VERSION}_linux_arm64.tar.gz" \
-      TF_DOWNLOAD_URL="https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_arm64.zip" \
-      ;;           \
-    x86_64|amd64)  \
-      ARCH="amd64" \
-      GH_DOWNLOAD_URL="https://github.com/cli/cli/releases/download/v${GITHUB_CLI_VERSION}/gh_${GITHUB_CLI_VERSION}_linux_amd64.tar.gz" \
-      CD_DOWNLOAD_URL="https://github.com/coder/coder/releases/download/v${CODER_CLI_VERSION}/coder_${CODER_CLI_VERSION}_linux_amd64.tar.gz" \
-      TF_DOWNLOAD_URL="https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" \
-      ;;           \
-    *)             \
-      echo "Unsupported architecture [${arch}]" \
-      exit 1       \
-      ;;           \
-  esac;            \
-  mkdir -p /opt/coder/cli;             \
-  mkdir -p /opt/github/cli;            \
-  mkdir -p /opt/hashicorp/terraform;            \
-  curl -L -o /tmp/gh.tar.gz ${GH_DOWNLOAD_URL}; \
-  tar -xf /tmp/gh.tar.gz -C /opt/github/cli;    \
-  curl -L -o /tmp/coder.tar.gz ${CD_DOWNLOAD_URL}; \
-  tar -xf /tmp/coder.tar.gz -C /opt/coder/cli;    \
-  curl -L -o /tmp/terraform.zip ${TF_DOWNLOAD_URL}; \
-  unzip -qd /opt/hashicorp/terraform /tmp/terraform.zip; \
-  mkdir /opt/github/_cli; \
-  cp -r /opt/github/cli/gh_${GITHUB_CLI_VERSION}_linux_${ARCH} /opt/github/_cli;
-
-# Do some cleanup for the GitHub CLI path
-RUN set -eux; \
-  ls /opt/github; \
-  cp /opt/github/_cli/**/LICENSE /opt/github/cli/LICENSE; \
-  cp -R /opt/github/_cli/**/bin /opt/github/cli/bin; \
-  cp -R /opt/github/_cli/**/share /opt/github/cli/share; \
-  rm -rf /opt/github/_cli;
+      GITHUB_CLI_DOWNLOAD_URL="https://github.com/cli/cli/releases/download/v${GITHUB_CLI_VERSION}/gh_${GITHUB_CLI_VERSION}_linux_arm64.tar.gz"; \
+      TERRAFORM_DOWNLOAD_URL="https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_arm64.zip"; \
+      CODER_DOWNLOAD_URL="https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_arm64.zip"; \
+      KUBECTL_DOWNLOAD_URL="https://dl.k8s.io/release/v${KUBECTL_VERSION}/bin/linux/arm64/kubectl"; \
+      HELM_DOWNLOAD_URL="https://get.helm.sh/helm-v${HELM_VERSION}-linux-arm64.tar.gz"; \
+      ;; \
+    amd64|x86_64) \
+      GITHUB_CLI_DOWNLOAD_URL="https://github.com/cli/cli/releases/download/v${GITHUB_CLI_VERSION}/gh_${GITHUB_CLI_VERSION}_linux_amd64.tar.gz" \
+      CODER_DOWNLOAD_URL="https://github.com/coder/coder/releases/download/v${CODER_CLI_VERSION}/coder_${CODER_CLI_VERSION}_linux_amd64.tar.gz" \
+      TERRAFORM_DOWNLOAD_URL="https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" \
+      KUBECTL_DOWNLOAD_URL="https://dl.k8s.io/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl"; \
+      HELM_DOWNLOAD_URL="https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz"; \
+      ;; \
+  esac; \
+  mkdir -p /opt/coder/cli /opt/github/cli /opt/hashicorp/terraform /opt/helm; \
+  curl -L -o /usr/local/bin/kubectl ${KUBECTL_DOWNLOAD_URL}; \
+  curl -L -s ${CODER_DOWNLOAD_URL} | tar xfz - -C /opt/coder/cli --strip-components=1; \
+  curl -L -s ${GITHUB_CLI_DOWNLOAD_URL} | tar xfz - -C /opt/github/cli --strip-components=1; \
+  curl -L -s ${HELM_DOWNLOAD_URL} | tar xfz - -C /opt/helm --strip-components=1; \
+  curl -L -o /tmp/terraform.zip ${TERRAFORM_DOWNLOAD_URL}; \
+  unzip -qd /opt/hashicorp/terraform /tmp/terraform.zip;
 
 # Cleanup temporary distributions
-RUN rm /tmp/*.tar.gz /tmp/*.zip
+RUN rm /tmp/*.zip
 
+# Let the user execute `kubectl`
+RUN chmod +x /usr/local/bin/kubectl
+
+# Set back to our user!
 USER ${USERNAME}
 WORKDIR /home/${USERNAME}
 
@@ -96,3 +89,7 @@ WORKDIR /home/${USERNAME}
 RUN echo "export PATH=\"\$PATH:/opt/coder/cli\"" >> /home/${USERNAME}/.bashrc
 RUN echo "export PATH=\"\$PATH:/opt/hashicorp/terraform\"" >> /home/${USERNAME}/.bashrc
 RUN echo "export PATH=\"\$PATH:/opt/github/cli/bin\"" >> /home/${USERNAME}/.bashrc
+RUN echo "export PATH=\"\$PATH:/opt/helm\"" >> /home/${USERNAME}/.bashrc
+
+# Add common Helm repositores
+RUN /opt/helm/helm repo add bitnami https://charts.bitnami.com/bitnami

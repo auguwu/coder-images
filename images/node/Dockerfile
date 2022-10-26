@@ -33,18 +33,18 @@ ENV NODE_VERSION="19.0.0"
 RUN DEBIAN_FRONTEND="noninteractive" apt install -y xz-utils
 
 # download Node here
-RUN set -eux; \
-    arch="$(dpkg --print-architecture)"; \
-    case "${arch}" in \
-        aarch64|arm64) \
+RUN set -eux;                                                                                                      \
+    arch="$(dpkg --print-architecture)";                                                                           \
+    case "${arch}" in                                                                                              \
+        aarch64|arm64)                                                                                             \
             NODE_DOWNLOAD_URL="https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-arm64.tar.xz"; \
-            ;; \
-        amd64|x86_64) \
-            NODE_DOWNLOAD_URL="https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.xz"; \
-            ;; \
-    esac; \
-    mkdir -p /opt/nodejs; \
-    curl -L -o /tmp/node.tar.xz ${NODE_DOWNLOAD_URL}; \
+            ;;                                                                                                     \
+        amd64|x86_64)                                                                                              \
+            NODE_DOWNLOAD_URL="https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.xz";   \
+            ;;                                                                                                     \
+    esac;                                                                                                          \
+    mkdir -p /opt/nodejs;                                                                                          \
+    curl -L -o /tmp/node.tar.xz ${NODE_DOWNLOAD_URL};                                                              \
     tar -xJf /tmp/node.tar.xz -C /opt/nodejs --strip-components=1 --no-same-owner;
 
 USER ${USERNAME}

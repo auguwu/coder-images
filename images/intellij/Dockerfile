@@ -19,10 +19,37 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# We will build Moby from source, because why not!
-FROM ghcr.io/auguwu/coder-images/golang AS build
+FROM ghcr.io/auguwu/coder-images/java
 
+ENV USERNAME=noel
+
+# Run as root so we don't have to repeat sudo
 USER root
 
-# Now, we will bring in the built source code in here.
-FROM ghcr.io/auguwu/coder-images/base
+# set versions here
+ENV IJ_VERSION="2022.2.3"
+
+# Install packages
+RUN DEBIAN_FRONTEND="noninteractive" apt install -y libxtst6 libxrender1 libfontconfig1 libxi6 libgtk-3-0
+
+# Install IntelliJ IDEA
+RUN set -eux; \
+  arch="$(dpkg --print-architecture)"; \
+  case "${arch}" in \
+    arm64|aarch64) \
+      INTELLIJ_DOWNLOAD="https://download.jetbrains.com/idea/ideaIU-${IJ_VERSION}.tar.gz"; \
+      ;; \
+    amd64|x86_64) \
+      INTELLIJ_DOWNLOAD="https://download.jetbrains.com/idea/ideaIU-${IJ_VERSION}.tar.gz"; \
+      ;; \
+  esac; \
+  mkdir -p /opt/jetbrains/idea; \
+  curl -L -o /tmp/intellij.tar.gz ${INTELLIJ_DOWNLOAD}; \
+  tar -xf /tmp/intellij.tar.gz -C /opt/jetbrains/idea --strip-components=1 --no-same-owner; \
+  rm /tmp/*.tar.gz;
+
+# Symlink as /usr/bin/intellij-idea-community
+RUN ln -s /opt/jetbrains/idea/bin/idea.sh /usr/bin/intellij-idea-community
+
+# Set back to the username specified
+USER ${USERNAME}

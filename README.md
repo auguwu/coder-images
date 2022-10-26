@@ -24,9 +24,6 @@ This image extends [ghcr.io/auguwu/coder-images/base](#ghcrioauguwucoder-imagesb
 ### `ghcr.io/auguwu/coder-images/rust:latest`
 This image extends [ghcr.io/auguwu/coder-images/base](#ghcrioauguwucoder-imagesbaselatest), but bundles all the Rust components required.
 
-### `ghcr.io/auguwu/coder-images/docker:latest`
-This image extends [ghcr.io/auguwu/coder-images/base](#ghcrioauguwucoder-imagesbaselatest), but bundles and starts the Docker engine.
-
 ### `ghcr.io/auguwu/coder-images/intellij:latest`
 This image extends [ghcr.io/auguwu/coder-images/java](#ghcrioauguwucoder-imagesjavalatest), but adds the IntelliJ IDEA IDE into use.
 

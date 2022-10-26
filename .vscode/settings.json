@@ -1,0 +1,6 @@
+{
+  "[terraform]": {
+    "editor.tabSize": 2,
+    "editor.defaultFormatter": "hashicorp.terraform"
+  }
+}
