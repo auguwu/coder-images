@@ -30,7 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        image: [base, java, golang, node, rust, intellij]
+        image: [base, java, golang, node, intellij]
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
@@ -60,7 +60,7 @@ jobs:
     runs-on: self-hosted
     strategy:
       matrix:
-        image: [base, java, golang, node, rust, intellij]
+        image: [base, java, golang, node, intellij]
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
@@ -84,7 +84,7 @@ jobs:
     needs: [release-x64, release-arm64]
     strategy:
       matrix:
-        image: [base, java, golang, node, rust, intellij]
+        image: [base, java, golang, node, intellij]
     steps:
     - name: Login into GitHub Container Registry
       uses: docker/login-action@v2
