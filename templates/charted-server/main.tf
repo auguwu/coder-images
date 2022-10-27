@@ -33,16 +33,20 @@ terraform {
   }
 }
 
+provider "kubernetes" {
+  config_path = var.use_host_kubeconfig == true ? "~/.kube/config" : null
+}
+
 variable "dotfiles_repo" {
   description = "The repository URL to your dotfiles configuration"
-  default     = false
-  type        = bool
+  default     = ""
+  type        = string
 }
 
 variable "use_host_kubeconfig" {
   description = "This variable allows you to use the host pod's Kubernetes configuration"
   sensitive   = true
-  default     = true
+  default     = false
   type        = bool
 }
 
@@ -63,41 +67,6 @@ resource "coder_agent" "main" {
   startup_script = <<-EOF
   #!/bin/bash
 
-  if [ ! -d "/home/noel/.logs" ]; then
-    mkdir /home/noel/.logs
-  fi
-
-  # This script automatically installs JetBrains Projector. Though, some latency might occur
-  # but that's fine with me, if it's smooth.
-  PROJECTOR_BINARY=/home/noel/.local/bin/projector
-  if [ -f $PROJECTOR_BINARY ]; then
-    echo "[startup] JetBrains Projector is already installed -- checking for updates!"
-    $PROJECTOR_BINARY self-update 2>&1 | tee /home/noel/.logs/projector.log
-  else
-    # We need to install Python since the base image doesn't include Python 3
-    DEBIAN_FRONTEND="noninteractive" sudo apt install -y python3
-    pip3 install projector-installer --user 2>&1 | tee /home/noel/.logs/projector.log
-  fi
-
-  echo "[startup] Accepting Projector's licensing terms!"
-  $PROJECTOR_BINARY --accept-license 2>&1 | tee -a /home/noel/.logs/projector.log
-
-  PROJECTOR_CONFIG_PATH=/home/noel/.projector/configs/intellij
-
-  if [ -d "$PROJECTOR_CONFIG_PATH" ]; then
-    echo "[startup] Projector already configured IntelliJ for us! Skipping step..." 2&>1 | tee -a /home/noel/.logs/projector.log
-  else
-    echo "[startup] Automatically installing IntelliJ IDEA Community -- this might take a while!"
-    $PROJECTOR_BINARY ide autoinstall --config-name "intellij" --ide-name "IntelliJ IDEA Community Edition 2022.2.3" --hostname=localhost --port=3621
-
-    grep -iv "HANDSHAKE_TOKEN" $PROJECTOR_CONFIG_PATH/run.sh > temp && mv temp $PROJECTOR_CONFIG_PATH/run.sh 2>&1 | tee -a /home/noel/.logs/projector.log
-    chmod +x $PROJECTOR_CONFIG_PATH/run.sh 2>&1 | tee -a /home/noel/.logs/projector.log
-
-    echo "[startup] Installed IntelliJ IDEA Community!"
-  fi
-
-  $PROJECTOR_BINARY run intellij &
-
   # Setup Git
   ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
 
@@ -109,23 +78,10 @@ resource "coder_agent" "main" {
   EOF
 }
 
-resource "coder_app" "intellij" {
-  agent_id = coder_agent.main.id
-  name     = "IntelliJ IDEA Community Edition 2022.2.3"
-  icon     = "/icon/intellij.svg"
-  url      = "http://localhost:3621/"
-
-  healthcheck {
-    url       = "http://localhost:3621/"
-    interval  = 6
-    threshold = 20
-  }
-}
-
 resource "kubernetes_persistent_volume_claim" "workspace" {
   metadata {
     namespace = var.namespace
-    name      = "charted-server-${lower(data.coder_workspace.me.owner)}-workspace"
+    name      = "charted-server-workspace"
   }
 
   wait_until_bound = false
@@ -141,7 +97,7 @@ resource "kubernetes_persistent_volume_claim" "workspace" {
 
 resource "kubernetes_pod" "charted-server" {
   metadata {
-    name      = "charted_server"
+    name      = "charted-server"
     namespace = var.namespace
 
     labels = {
@@ -185,7 +141,7 @@ resource "kubernetes_pod" "charted-server" {
     volume {
       name = "workspace"
       persistent_volume_claim {
-        claim_name = kubernetes_persistent_volume_claim.workspace.metadata.0.name
+        claim_name = "charted-server-workspace"
         read_only  = false
       }
     }
