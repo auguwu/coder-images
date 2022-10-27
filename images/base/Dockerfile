@@ -29,7 +29,7 @@ ENV USERNAME=noel \
 # Install needed packages
 RUN DEBIAN_FRONTEND=noninteractive apt update && \
   DEBIAN_FRONTEND=noninteractive apt upgrade -y && \
-  DEBIAN_FRONTEND=noninteractive apt install -y sudo git curl neofetch git-lfs ca-certificates unzip zip bash vim nano
+  DEBIAN_FRONTEND=noninteractive apt install -y sudo git curl neofetch git-lfs ca-certificates unzip zip bash vim nano python3 python3-pip
 
 # Setup the user environment
 RUN groupadd -g ${USER_GID} ${USERNAME} && \
@@ -90,6 +90,7 @@ RUN echo "export PATH=\"\$PATH:/opt/coder/cli\"" >> /home/${USERNAME}/.bashrc
 RUN echo "export PATH=\"\$PATH:/opt/hashicorp/terraform\"" >> /home/${USERNAME}/.bashrc
 RUN echo "export PATH=\"\$PATH:/opt/github/cli/bin\"" >> /home/${USERNAME}/.bashrc
 RUN echo "export PATH=\"\$PATH:/opt/helm\"" >> /home/${USERNAME}/.bashrc
+RUN echo "export PATH=\"\$PATH:/home/${USERNAME}/.local/bin\"" >> /home/${USERNAME}/.bashrc
 
 # Add common Helm repositores
 RUN /opt/helm/helm repo add bitnami https://charts.bitnami.com/bitnami

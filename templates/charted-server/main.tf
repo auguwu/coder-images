@@ -67,6 +67,11 @@ resource "coder_agent" "main" {
   startup_script = <<-EOF
   #!/bin/bash
 
+  # This script installs JetBrains Projector, I'm fine with the latency, but
+  # you might not.
+  PROJECTOR_LOGS=/home/noel/.logs/projector.log
+  PROJECTOR_BINARY=
+
   # Setup Git
   ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
 

@@ -3,6 +3,7 @@ This template is made for the use of [**charted-server**](https://github.com/cha
 
 ## How to use this template?
 ```sh
-# You will need to be signed into Coder to do this
+# You will need to be signed into Coder to do this to import this template
 $ cd templates/charted-server
+$ coder templates create "charted-server" --yes
 ```
