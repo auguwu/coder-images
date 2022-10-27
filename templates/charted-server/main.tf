@@ -67,10 +67,38 @@ resource "coder_agent" "main" {
   startup_script = <<-EOF
   #!/bin/bash
 
+  function log_cmd {
+    echo "[$(date)] $ $@"
+    $@ 2>&1 | tee /home/noel/.logs/projector.log
+  }
+
   # This script installs JetBrains Projector, I'm fine with the latency, but
   # you might not.
   PROJECTOR_LOGS=/home/noel/.logs/projector.log
-  PROJECTOR_BINARY=
+  PROJECTOR_BINARY=/home/noel/.local/bin/projector
+  PROJECTOR_CONFIG_PATH=/home/noel/.projector/configs/intellij
+
+  [ ! -d "/home/noel/.logs" ] && mkdir -p /home/noel/.logs
+  if [ -f "$PROJECTOR_BINARY" ]; then
+    echo "[startup] JetBrains Projector is already installed -- checking for updates..." 2>&1 | tee /home/noel/.logs/projector.log
+    $PROJECTOR_BINARY self-update 2>&1 | tee /home/noel/.logs/projector.log
+  else
+    echo "[startup] Installing JetBrains Projector installer..." | tee /home/noel/.logs/projector.log
+    pip3 install projector-installer --user 2>&1 | tee /home/noel/.logs/projector.log
+  fi
+
+  if [ -d "$PROJECTOR_CONFIG_PATH" ]; then
+    echo "[startup] Projector already has IntelliJ installed! skipping..." 2>&1 | tee /home/noel/.logs/projector.log
+  else
+    echo "[startup] Installing IntelliJ IDEA Community! This might take a while..." 2>&1 | tee /home/noel/.logs/projector.log
+    $PROJECTOR_BINARY ide autoinstall --config-name intellij --ide-name "IntelliJ IDEA Community Edition 2022.2.3" --hostname=localhost --port=3621 2>&1 | tee /home/noel/.logs/projector.log
+    grep -iv "HANDSHAKE_TOKEN" $PROJECTOR_CONFIG_PATH/run.sh > temp && mv temp $PROJECTOR_CONFIG_PATH/run.sh 2>&1 | tee -a /home/noel/.logs/projector.log
+    chmod +x $PROJECTOR_CONFIG_PATH/run.sh 2>&1 | tee -a /home/noel/.logs/projector.log
+    echo "[startup] Installed IntelliJ IDEA Community!" 2>&1 | tee -a /home/noel/.logs/projector.log
+  fi
+
+  echo "[startup] Starting JetBrains Projector..." 2>&1 | tee -a /home/noel/.logs/projector.log
+  $PROJECTOR_BINARY run intellij &
 
   # Setup Git
   ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
@@ -81,6 +109,20 @@ resource "coder_agent" "main" {
   mkdir /home/noel/workspace
   git clone https://github.com/charted-dev/charted /home/noel/workspace
   EOF
+}
+
+resource "coder_app" "intellij" {
+  display_name = "IntelliJ IDEA Community Edition 2022.2.3"
+  agent_id     = coder_agent.main.id
+  icon         = "/icon/intellij.svg"
+  slug         = "intellij"
+  url          = "http://localhost:3621/"
+
+  healthcheck {
+    url       = "http://localhost:3621/"
+    interval  = 6
+    threshold = 20
+  }
 }
 
 resource "kubernetes_persistent_volume_claim" "workspace" {
@@ -118,9 +160,10 @@ resource "kubernetes_pod" "charted-server" {
     }
 
     container {
-      name    = "charted-server-workspace"
-      image   = "ghcr.io/auguwu/coder-images/java:latest"
-      command = ["sh", "-c", coder_agent.main.init_script]
+      name              = "charted-server-workspace"
+      image             = "ghcr.io/auguwu/coder-images/java:latest"
+      command           = ["sh", "-c", coder_agent.main.init_script]
+      image_pull_policy = "Always"
 
       env {
         name  = "CODER_ACCESS_URL"
