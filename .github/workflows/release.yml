@@ -28,9 +28,6 @@ jobs:
   base-x64:
     name: Base Image Release Pipeline [${{ matrix.image }} image (linux/amd64)]
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        image: [java, golang, node, intellij]
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
@@ -73,7 +70,7 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Build
-      run: docker build ./images/base} -f ./images/$base/Dockerfile -t ghcr.io/auguwu/coder-images/base:latest-arm64 --platform linux/arm64/v8
+      run: docker build images/base -f ./images/base/Dockerfile -t ghcr.io/auguwu/coder-images/base:latest-arm64 --platform linux/arm64/v8
 
     - name: Push
       run: docker push ghcr.io/auguwu/coder-images/base:latest-arm64
