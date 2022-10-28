@@ -54,7 +54,7 @@ jobs:
 
   base-arm:
     name: Base Image Release Pipeline [base image (linux/arm64)]
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
