@@ -51,9 +51,7 @@ RUN set -eux; \
   mkdir -p /opt/maven; \
   curl -L -s ${TEMURIN_DOWNLOAD_URL} | tar xfz - -C /opt/java/jdk --strip-components=1; \
   curl -L -s ${MAVEN_DOWNLOAD_URL}   | tar xfz - -C /opt/maven --strip-components=1; \
-  curl -L -o /tmp/gradle.zip ${GRADLE_DOWNLOAD_URL}; \
-  unzip -qd /opt/gradle /tmp/gradle.zip; \
-  rm /tmp/*.zip;
+  curl -L -s ${GRADLE_DOWNLOAD_URL}  | bsdtar xvf - --strip-components=1 -C /opt/gradle;
 
 # Go back as the user
 USER ${USERNAME}
@@ -61,4 +59,4 @@ USER ${USERNAME}
 RUN echo "export PATH=\"\$PATH:/opt/java/jdk/bin\"" >> /home/${USERNAME}/.bashrc
 RUN echo "export PATH=\"\$PATH:/opt/maven/bin\"" >> /home/${USERNAME}/.bashrc
 RUN echo "export PATH=\"\$PATH:/opt/gradle/bin\"" >> /home/${USERNAME}/.bashrc
-RUN echo "\nexport JAVA_HOME=\"/opt/java/jdk/bin\"" >> /home/${USERNAME}/.bashrc
+RUN echo "export JAVA_HOME=\"/opt/java/jdk/bin\"" >> /home/${USERNAME}/.bashrc

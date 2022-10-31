@@ -29,7 +29,7 @@ ENV USERNAME=noel \
 # Install needed packages
 RUN DEBIAN_FRONTEND=noninteractive apt update && \
   DEBIAN_FRONTEND=noninteractive apt upgrade -y && \
-  DEBIAN_FRONTEND=noninteractive apt install -y sudo git curl neofetch git-lfs ca-certificates unzip zip bash vim nano python3 python3-pip
+  DEBIAN_FRONTEND=noninteractive apt install -y sudo git curl neofetch git-lfs ca-certificates unzip zip bash vim nano python3 python3-pip libarchive-tools
 
 # Setup the user environment
 RUN groupadd -g ${USER_GID} ${USERNAME} && \
@@ -69,11 +69,10 @@ RUN set -eux; \
   esac; \
   mkdir -p /opt/coder/cli /opt/github/cli /opt/hashicorp/terraform /opt/helm; \
   curl -L -o /usr/local/bin/kubectl ${KUBECTL_DOWNLOAD_URL}; \
-  curl -L -s ${CODER_DOWNLOAD_URL} | tar xfz - -C /opt/coder/cli --strip-components=1; \
+  curl -L -s ${CODER_DOWNLOAD_URL}      | tar xfz - -C /opt/coder/cli --strip-components=1; \
   curl -L -s ${GITHUB_CLI_DOWNLOAD_URL} | tar xfz - -C /opt/github/cli --strip-components=1; \
-  curl -L -s ${HELM_DOWNLOAD_URL} | tar xfz - -C /opt/helm --strip-components=1; \
-  curl -L -o /tmp/terraform.zip ${TERRAFORM_DOWNLOAD_URL}; \
-  unzip -qd /opt/hashicorp/terraform /tmp/terraform.zip;
+  curl -L -s ${HELM_DOWNLOAD_URL}       | tar xfz - -C /opt/helm --strip-components=1; \
+  curl -L -s ${TERRAFORM_DOWNLOAD_URL}  | bsdtar xvf - --strip-components=1 -C /opt/hashicorp/terraform;
 
 # Cleanup temporary distributions
 RUN rm /tmp/*.zip
