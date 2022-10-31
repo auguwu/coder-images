@@ -59,4 +59,4 @@ USER ${USERNAME}
 RUN echo "export PATH=\"\$PATH:/opt/java/jdk/bin\"" >> /home/${USERNAME}/.bashrc
 RUN echo "export PATH=\"\$PATH:/opt/maven/bin\"" >> /home/${USERNAME}/.bashrc
 RUN echo "export PATH=\"\$PATH:/opt/gradle/bin\"" >> /home/${USERNAME}/.bashrc
-RUN echo "export JAVA_HOME=\"/opt/java/jdk/bin\"" >> /home/${USERNAME}/.bashrc
+RUN echo "export JAVA_HOME=\"/opt/java/jdk\"" >> /home/${USERNAME}/.bashrc
