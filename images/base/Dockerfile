@@ -74,9 +74,6 @@ RUN set -eux; \
   curl -L -s ${HELM_DOWNLOAD_URL}       | tar xfz - -C /opt/helm --strip-components=1; \
   curl -L -s ${TERRAFORM_DOWNLOAD_URL}  | bsdtar xvf - --strip-components=1 -C /opt/hashicorp/terraform;
 
-# Cleanup temporary distributions
-RUN rm /tmp/*.zip
-
 # Let the user execute `kubectl`
 RUN chmod +x /usr/local/bin/kubectl
 
