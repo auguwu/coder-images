@@ -67,10 +67,20 @@ resource "coder_agent" "main" {
   startup_script = <<-EOF
   #!/bin/bash
 
-  function log_cmd {
-    echo "[$(date)] $ $@"
-    $@ 2>&1 | tee /home/noel/.logs/projector.log
-  }
+
+  # Install required binaries since Projector fails to run
+  sudo apt install -y libxtst6 libxi-dev libxmu-dev 2>&1 | tee /home/noel/.logs/projector.log
+
+  if [ ! -f ~/.profile ]; then
+    cp /etc/skel/.profile $HOME
+  fi
+
+  if [ ! -f ~/.bashrc ]; then
+    cp /etc/skel/.bashrc $HOME
+  fi
+
+  echo "export PATH=\"$PATH:/opt/coder/cli:/opt/hashicorp/terraform:/opt/github/cli/bin:/opt/helm:/home/noel/.local/bin:/opt/java/jdk/bin:/opt/maven/bin:/opt/gradle/bin\"" >> /home/noel/.bashrc
+  echo "export JAVA_HOME=\"/opt/java/jdk\"" >> /home/noel/.bashrc
 
   # This script installs JetBrains Projector, I'm fine with the latency, but
   # you might not.
@@ -83,7 +93,7 @@ resource "coder_agent" "main" {
     echo "[startup] JetBrains Projector is already installed -- checking for updates..." 2>&1 | tee /home/noel/.logs/projector.log
     $PROJECTOR_BINARY self-update 2>&1 | tee /home/noel/.logs/projector.log
   else
-    echo "[startup] Installing JetBrains Projector installer..." | tee /home/noel/.logs/projector.log
+    echo "[startup] Installing JetBrains Projector installer..." 2>&1 | tee /home/noel/.logs/projector.log
     pip3 install projector-installer --user 2>&1 | tee /home/noel/.logs/projector.log
   fi
 
@@ -91,7 +101,7 @@ resource "coder_agent" "main" {
     echo "[startup] Projector already has IntelliJ installed! skipping..." 2>&1 | tee /home/noel/.logs/projector.log
   else
     echo "[startup] Installing IntelliJ IDEA Community! This might take a while..." 2>&1 | tee /home/noel/.logs/projector.log
-    $PROJECTOR_BINARY ide autoinstall --config-name intellij --ide-name "IntelliJ IDEA Community Edition 2022.2.3" --hostname=localhost --port=3621 2>&1 | tee /home/noel/.logs/projector.log
+    $PROJECTOR_BINARY --accept-license ide autoinstall --config-name intellij --ide-name "IntelliJ IDEA Community Edition 2022.2.3" --hostname=localhost --port=3621 2>&1 | tee /home/noel/.logs/projector.log
     grep -iv "HANDSHAKE_TOKEN" $PROJECTOR_CONFIG_PATH/run.sh > temp && mv temp $PROJECTOR_CONFIG_PATH/run.sh 2>&1 | tee -a /home/noel/.logs/projector.log
     chmod +x $PROJECTOR_CONFIG_PATH/run.sh 2>&1 | tee -a /home/noel/.logs/projector.log
     echo "[startup] Installed IntelliJ IDEA Community!" 2>&1 | tee -a /home/noel/.logs/projector.log
@@ -106,7 +116,6 @@ resource "coder_agent" "main" {
   ${var.dotfiles_repo != "" ? "coder dotfiles -y ${var.dotfiles_repo}" : ""}
 
   # Initialize charted-server's code
-  mkdir /home/noel/workspace
   git clone https://github.com/charted-dev/charted /home/noel/workspace
   EOF
 }
