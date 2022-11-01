@@ -67,7 +67,6 @@ resource "coder_agent" "main" {
   startup_script = <<-EOF
   #!/bin/bash
 
-
   # Install required binaries since Projector fails to run
   sudo apt install -y libxtst6 libxi-dev libxmu-dev 2>&1 | tee /home/noel/.logs/projector.log
 
@@ -171,7 +170,7 @@ resource "kubernetes_pod" "charted-server" {
     container {
       name              = "charted-server-workspace"
       image             = "ghcr.io/auguwu/coder-images/java:latest"
-      command           = ["sh", "-c", coder_agent.main.init_script]
+      command           = ["/bin/bash", "-c", coder_agent.main.init_script]
       image_pull_policy = "Always"
 
       env {
