@@ -21,6 +21,9 @@
 
 FROM ubuntu:jammy
 
+# Set the shell to Bash
+SHELL ["/bin/bash", "-c"]
+
 # For now, this will be `noel` as the user. You can extend this to be whatever you like.
 ENV USERNAME=noel \
   USER_UID=1000 \
