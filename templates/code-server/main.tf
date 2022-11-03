@@ -37,6 +37,11 @@ provider "kubernetes" {
   config_path = var.use_host_kubeconfig == true ? "~/.kube/config" : null
 }
 
+variable "workspace_name" {
+  description = "Workspace name to use for Kubernetes pod & volume"
+  type        = string
+}
+
 variable "dotfiles_repo" {
   description = "The repository URL to your dotfiles configuration"
   default     = ""
@@ -56,6 +61,23 @@ variable "namespace" {
   type        = string
 }
 
+variable "docker_image_type" {
+  description = "The Docker image flavour to use"
+  default     = "node"
+  type        = string
+
+  validation {
+    condition     = contains(["node", "golang", "rust"], var.docker_image_type)
+    error_message = "Docker image flavour is not a valid one~!"
+  }
+}
+
+variable "git_repository" {
+  description = "The Git repository to initialize, if any."
+  default     = ""
+  type        = string
+}
+
 data "coder_workspace" "me" {
 }
 
@@ -64,11 +86,8 @@ resource "coder_agent" "main" {
   dir  = "/home/noel"
   os   = "linux"
 
-  startup_script = <<-EOF
+  startup_script = <<-EOL
   #!/bin/bash
-
-  # Install required binaries since Projector fails to run
-  sudo apt install -y libxtst6 libxi-dev libxmu-dev 2>&1 | tee /home/noel/.logs/projector.log
 
   if [ ! -f ~/.profile ]; then
     cp /etc/skel/.profile $HOME
@@ -78,62 +97,32 @@ resource "coder_agent" "main" {
     cp /etc/skel/.bashrc $HOME
   fi
 
-  # This script installs JetBrains Projector, I'm fine with the latency, but
-  # you might not.
-  PROJECTOR_LOGS=/home/noel/.logs/projector.log
-  PROJECTOR_BINARY=/home/noel/.local/bin/projector
-  PROJECTOR_CONFIG_PATH=/home/noel/.projector/configs/intellij
+  # install and start code-server
+  curl -fsSL https://code-server.dev/install.sh | sh
+  code-server --auth none --port 3621
 
-  [ ! -d "/home/noel/.logs" ] && mkdir -p /home/noel/.logs
-  if [ -f "$PROJECTOR_BINARY" ]; then
-    echo "[startup] JetBrains Projector is already installed -- checking for updates..." 2>&1 | tee /home/noel/.logs/projector.log
-    $PROJECTOR_BINARY self-update 2>&1 | tee /home/noel/.logs/projector.log
-  else
-    echo "[startup] Installing JetBrains Projector installer..." 2>&1 | tee /home/noel/.logs/projector.log
-    pip3 install projector-installer --user 2>&1 | tee /home/noel/.logs/projector.log
-  fi
-
-  if [ -d "$PROJECTOR_CONFIG_PATH" ]; then
-    echo "[startup] Projector already has IntelliJ installed! skipping..." 2>&1 | tee /home/noel/.logs/projector.log
-  else
-    echo "[startup] Installing IntelliJ IDEA Community! This might take a while..." 2>&1 | tee /home/noel/.logs/projector.log
-    $PROJECTOR_BINARY --accept-license ide autoinstall --config-name intellij --ide-name "IntelliJ IDEA Community Edition 2022.2.3" --hostname=localhost --port=3621 2>&1 | tee /home/noel/.logs/projector.log
-    grep -iv "HANDSHAKE_TOKEN" $PROJECTOR_CONFIG_PATH/run.sh > temp && mv temp $PROJECTOR_CONFIG_PATH/run.sh 2>&1 | tee -a /home/noel/.logs/projector.log
-    chmod +x $PROJECTOR_CONFIG_PATH/run.sh 2>&1 | tee -a /home/noel/.logs/projector.log
-    echo "[startup] Installed IntelliJ IDEA Community!" 2>&1 | tee -a /home/noel/.logs/projector.log
-  fi
-
-  echo "[startup] Starting JetBrains Projector..." 2>&1 | tee -a /home/noel/.logs/projector.log
-  $PROJECTOR_BINARY run intellij &
-
-  # Setup Git
-  ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
-
-  ${var.dotfiles_repo != "" ? "coder dotfiles -y ${var.dotfiles_repo}" : ""}
-
-  # Initialize charted-server's code
-  git clone https://github.com/charted-dev/charted /home/noel/workspace
-  EOF
+  ${var.git_repository != "" ? "sudo git clone ${var.git_repository} /workspace" : ""}
+  EOL
 }
 
-resource "coder_app" "intellij" {
-  display_name = "IntelliJ IDEA Community Edition 2022.2.3"
+resource "coder_app" "code-server" {
   agent_id     = coder_agent.main.id
-  icon         = "/icon/intellij.svg"
-  slug         = "intellij"
-  url          = "http://localhost:3621/"
+  slug         = "code-server"
+  display_name = "VSCode"
+  url          = "http://localhost:3621/?folder=${var.git_repository != "" ? "/workspace" : "/home/noel"}"
+  icon         = "/icon/code.svg"
 
   healthcheck {
-    url       = "http://localhost:3621/"
-    interval  = 6
-    threshold = 20
+    url       = "http://localhost:3621/healthz"
+    interval  = 2
+    threshold = 10
   }
 }
 
-resource "kubernetes_persistent_volume_claim" "workspace" {
+resource "kubernetes_persistent_volume_claim" "awa" {
   metadata {
     namespace = var.namespace
-    name      = "charted-server-workspace"
+    name      = var.workspace_name
   }
 
   wait_until_bound = false
@@ -147,14 +136,14 @@ resource "kubernetes_persistent_volume_claim" "workspace" {
   }
 }
 
-resource "kubernetes_pod" "charted-server" {
+resource "kubernetes_pod" "workspace" {
   metadata {
-    name      = "charted-server"
+    name      = var.workspace_name
     namespace = var.namespace
 
     labels = {
       "k8s.noelware.cloud/component" = "coder",
-      "k8s.noelware.cloud/template"  = "charted-server"
+      "k8s.noelware.cloud/template"  = "code-server"
     }
   }
 
@@ -165,8 +154,8 @@ resource "kubernetes_pod" "charted-server" {
     }
 
     container {
-      name              = "charted-server-workspace"
-      image             = "ghcr.io/auguwu/coder-images/java:latest"
+      name              = "workspace"
+      image             = "ghcr.io/auguwu/coder-images/${var.docker_image_type}:latest"
       command           = ["/bin/bash", "-c", coder_agent.main.init_script]
       image_pull_policy = "Always"
 
@@ -194,7 +183,7 @@ resource "kubernetes_pod" "charted-server" {
     volume {
       name = "workspace"
       persistent_volume_claim {
-        claim_name = "charted-server-workspace"
+        claim_name = var.workspace_name
         read_only  = false
       }
     }

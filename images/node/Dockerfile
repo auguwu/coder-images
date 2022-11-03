@@ -49,4 +49,4 @@ RUN set -eux;                                                                   
 
 USER ${USERNAME}
 
-RUN echo "export PATH=\"\$PATH:/opt/nodejs/bin\"" >> /home/${USERNAME}/.bashrc
+ENV PATH=$PATH:/opt/nodejs/bin

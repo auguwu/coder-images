@@ -48,27 +48,11 @@ RUN set -eux; \
       GOLANGCI_DOWNLOAD_URL="https://github.com/golangci/golangci-lint/releases/download/v${GOLANGCI_VERSION}/golangci-lint-${GOLANGCI_VERSION}-linux-amd64.tar.gz" \
       ;; \
   esac; \
-  mkdir -p /opt/golang; \
-  mkdir -p /opt/tools/goreleaser; \
-  mkdir -p /opt/tools/_golangci; \
-  curl -L -o /tmp/golang.tar.gz ${GO_DOWNLOAD_URL}; \
-  tar -xf /tmp/golang.tar.gz -C /opt/golang; \
-  curl -L -o /tmp/goreleaser.tar.gz ${GORELEASER_DOWNLOAD_URL}; \
-  tar -xf /tmp/goreleaser.tar.gz -C /opt/tools/goreleaser; \
-  curl -L -o /tmp/golangci.tar.gz ${GOLANGCI_DOWNLOAD_URL}; \
-  tar -xf /tmp/golangci.tar.gz -C /opt/tools/_golangci; \
-  rm /tmp/*.tar.gz;
-
-# Fix up the directory structure for GolangCI tools.
-RUN set -eux; \
-  mkdir -p /opt/tools/golangci; \
-  cp /opt/tools/_golangci/**/LICENSE /opt/tools/golangci/LICENSE; \
-  cp /opt/tools/_golangci/**/README.md /opt/tools/golangci/README.md; \
-  cp /opt/tools/_golangci/**/golangci-lint /opt/tools/golangci/golangci-lint; \
-  rm -rf /opt/tools/_golangci;
+  mkdir -p /opt/golang/go /opt/golang/tools/golangci /opt/golang/tools/goreleaser; \
+  curl -L -s ${GO_DOWNLOAD_URL}         | tar xfz - -C /opt/golang/go --strip-components=1 --no-same-owner; \
+  curl -L -s ${GORELEASER_DOWNLOAD_URL} | tar xfz - -C /opt/golang/tools/goreleaser --no-same-owner; \
+  curl -L -s ${GOLANGCI_DOWNLOAD_URL}   | tar xfz - -C /opt/golang/tools/golangci --strip-components 1 --no-same-owner;
 
 USER ${USERNAME}
 
-RUN echo "export PATH=\"\$PATH:/opt/golang/go/bin\"" >> /home/${USERNAME}/.bashrc
-RUN echo "export PATH=\"\$PATH:/opt/tools/goreleaser\"" >> /home/${USERNAME}/.bashrc
-RUN echo "export PATH=\"\$PATH:/opt/tools/golangci\"" >> /home/${USERNAME}/.bashrc
+ENV PATH=$PATH:/opt/golang/go/bin:/opt/golang/tools/goreleaser:/opt/golang/tools/golangci

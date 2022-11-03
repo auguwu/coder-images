@@ -31,6 +31,9 @@ ENV JDK_VERSION="18.0.2.1"
 ENV GRADLE_VERSION="7.5.1"
 ENV MAVEN_VERSION="3.8.6"
 
+# boop
+RUN DEBIAN_FRONTEND="noninteractive" apt install -y libarchive-tools
+
 # Install packages!
 RUN set -eux; \
   arch="$(dpkg --print-architecture)"; \
@@ -51,12 +54,12 @@ RUN set -eux; \
   mkdir -p /opt/maven; \
   curl -L -s ${TEMURIN_DOWNLOAD_URL} | tar xfz - -C /opt/java/jdk --strip-components=1; \
   curl -L -s ${MAVEN_DOWNLOAD_URL}   | tar xfz - -C /opt/maven --strip-components=1; \
-  curl -L -s ${GRADLE_DOWNLOAD_URL}  | bsdtar xvf - --strip-components=1 -C /opt/gradle;
+  curl -L -s ${GRADLE_DOWNLOAD_URL}  | bsdtar xfz - --strip-components=1 -C /opt/gradle;
+
+RUN chmod +x /opt/gradle/bin/gradle
 
 # Go back as the user
 USER ${USERNAME}
 
-RUN echo "export PATH=\"\$PATH:/opt/java/jdk/bin\"" >> /home/${USERNAME}/.bashrc
-RUN echo "export PATH=\"\$PATH:/opt/maven/bin\"" >> /home/${USERNAME}/.bashrc
-RUN echo "export PATH=\"\$PATH:/opt/gradle/bin\"" >> /home/${USERNAME}/.bashrc
-RUN echo "export JAVA_HOME=\"/opt/java/jdk\"" >> /home/${USERNAME}/.bashrc
+ENV JAVA_HOME=/opt/java/jdk
+ENV PATH=$PATH:$JAVA_HOME/bin:/opt/maven/bin:/opt/gradle/bin

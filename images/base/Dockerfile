@@ -44,7 +44,7 @@ RUN groupadd -g ${USER_GID} ${USERNAME} && \
 RUN git lfs install --system
 
 # stuff here
-ENV GITHUB_CLI_VERSION="2.18.1"
+ENV GITHUB_CLI_VERSION="2.19.0"
 ENV CODER_CLI_VERSION="0.11.0"
 ENV TERRAFORM_VERSION="1.3.3"
 ENV KUBECTL_VERSION="1.25.3"
@@ -75,7 +75,9 @@ RUN set -eux; \
   curl -L -s ${CODER_DOWNLOAD_URL}      | tar xfz - -C /opt/coder/cli --strip-components=1; \
   curl -L -s ${GITHUB_CLI_DOWNLOAD_URL} | tar xfz - -C /opt/github/cli --strip-components=1; \
   curl -L -s ${HELM_DOWNLOAD_URL}       | tar xfz - -C /opt/helm --strip-components=1; \
-  curl -L -s ${TERRAFORM_DOWNLOAD_URL}  | bsdtar xvf - --strip-components=1 -C /opt/hashicorp/terraform;
+  curl -L -o /tmp/terraform.zip ${TERRAFORM_DOWNLOAD_URL}; \
+  unzip -qd /opt/hashicorp/terraform /tmp/terraform.zip; \
+  rm /tmp/*.zip;
 
 # Let the user execute `kubectl`
 RUN chmod +x /usr/local/bin/kubectl
@@ -84,12 +86,7 @@ RUN chmod +x /usr/local/bin/kubectl
 USER ${USERNAME}
 WORKDIR /home/${USERNAME}
 
-# Set paths to coder, gh, and terraform
-RUN echo "export PATH=\"\$PATH:/opt/coder/cli\"" >> /home/${USERNAME}/.bashrc
-RUN echo "export PATH=\"\$PATH:/opt/hashicorp/terraform\"" >> /home/${USERNAME}/.bashrc
-RUN echo "export PATH=\"\$PATH:/opt/github/cli/bin\"" >> /home/${USERNAME}/.bashrc
-RUN echo "export PATH=\"\$PATH:/opt/helm\"" >> /home/${USERNAME}/.bashrc
-RUN echo "export PATH=\"\$PATH:/home/${USERNAME}/.local/bin\"" >> /home/${USERNAME}/.bashrc
+ENV PATH=$PATH:/opt/coder/cli:/opt/hashicorp/terraform:/opt/helm:/opt/github/cli/bin:/home/${USERNAME}/.local/bin
 
 # Add common Helm repositores
-RUN /opt/helm/helm repo add bitnami https://charts.bitnami.com/bitnami
+RUN helm repo add bitnami https://charts.bitnami.com/bitnami
