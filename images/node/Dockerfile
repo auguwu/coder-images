@@ -49,4 +49,4 @@ RUN set -eux;                                                                   
 USER ${USERNAME}
 
 ENV PATH=$PATH:/opt/nodejs/bin
-RUN npm i -g yarn pnpm
+RUN sudo npm i -g yarn pnpm
