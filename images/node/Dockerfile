@@ -1,5 +1,5 @@
 # 💐💚 coder-images: Optimized, and easy Docker images and Coder templates to use in your everyday work!
-# Copyright (c) 2022 Noel <cutie@floofy.dev>
+# Copyright (c) 2022-2023 Noel <cutie@floofy.dev>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,7 @@ ENV USERNAME=noel
 USER root
 
 # versions here
-ENV NODE_VERSION="19.0.0"
+ENV NODE_VERSION="19.3.0"
 
 # Install xz-utils so we can unpack the Node.js installation
 RUN DEBIAN_FRONTEND="noninteractive" apt install -y xz-utils
@@ -44,9 +44,9 @@ RUN set -eux;                                                                   
             ;;                                                                                                     \
     esac;                                                                                                          \
     mkdir -p /opt/nodejs;                                                                                          \
-    curl -L -o /tmp/node.tar.xz ${NODE_DOWNLOAD_URL};                                                              \
-    tar -xJf /tmp/node.tar.xz -C /opt/nodejs --strip-components=1 --no-same-owner;
+    curl -L ${NODE_DOWNLOAD_URL} | bsdtar xvf - --strip-components=1 -C /opt/nodejs
 
 USER ${USERNAME}
 
 ENV PATH=$PATH:/opt/nodejs/bin
+RUN npm i -g yarn pnpm

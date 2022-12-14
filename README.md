@@ -4,39 +4,33 @@
 This repository contains the templates and Docker images I built that is optimized for my work. I use [Coder](https://coder.com) to develop my projects when I do not have access to my main computer at home, so, it was easy to install and use.
 
 ## Docker Images
-### `ghcr.io/auguwu/coder-images/base:latest`
+### `ghcr.io/auguwu/coder-images/base`
 This is the base image that is based off **Ubuntu** since that's what I feel the most people are comfortable with Debian-based systems.
 
 This installs the following packages:
 - Terraform CLI
 - GitHub CLI
 - Coder CLI
+- **kubectl**
+- Helm
 
-### `ghcr.io/auguwu/coder-images/golang:latest`
-This image extends [ghcr.io/auguwu/coder-images/base](#ghcrioauguwucoder-imagesbaselatest), but adds the **Go** compiler installed.
+### `ghcr.io/auguwu/coder-images/golang`
+This image extends [ghcr.io/auguwu/coder-images/base](#ghcrioauguwucoder-imagesbase), but adds the **Go** compiler installed with GoReleaser and **golangci-lint**
 
-### `ghcr.io/auguwu/coder-images/java:latest`
-This image extends [ghcr.io/auguwu/coder-images/base](#ghcrioauguwucoder-imagesbaselatest), but bundles Adoptium JDK 19, Gradle, and Maven
+### `ghcr.io/auguwu/coder-images/java`
+This image extends [ghcr.io/auguwu/coder-images/base](#ghcrioauguwucoder-imagesbase), but bundles Adoptium JDK 19, Gradle, and Maven
 
-### `ghcr.io/auguwu/coder-images/node:latest`
-This image extends [ghcr.io/auguwu/coder-images/base](#ghcrioauguwucoder-imagesbaselatest), but bundles **Node.js**.
+### `ghcr.io/auguwu/coder-images/node`
+This image extends [ghcr.io/auguwu/coder-images/base](#ghcrioauguwucoder-imagesbase), but bundles **Node.js**, Yarn, and PNPM.
 
-### `ghcr.io/auguwu/coder-images/rust:latest`
-This image extends [ghcr.io/auguwu/coder-images/base](#ghcrioauguwucoder-imagesbaselatest), but bundles all the Rust components required.
+### `ghcr.io/auguwu/coder-images/rust`
+This image extends [ghcr.io/auguwu/coder-images/base](#ghcrioauguwucoder-imagesbase), but bundles all the Rust components like **rustc**, **Cargo**, **clippy**, and **rustfmt**.
 
-### `ghcr.io/auguwu/coder-images/intellij:latest`
-This image extends [ghcr.io/auguwu/coder-images/java](#ghcrioauguwucoder-imagesjavalatest), but adds the IntelliJ IDEA IDE into use.
+### `ghcr.io/auguwu/coder-images/intellij`
+This image extends [ghcr.io/auguwu/coder-images/java](#ghcrioauguwucoder-imagesjava), but adds the IntelliJ IDEA IDE into use.
 
-## Coder Templates
-### docker-in-k8s
-This template allows you to bring in the Docker runtime to use Docker images with the [buildx]() and [Compose v2]() plugins being installed, in a Kubernetes environment.
-
-This will use the `ghcr.io/auguwu/coder-images/docker:latest` image by default to run the Docker engine.
-
-### k8s-intellij
-This template allows you to use IntelliJ IDEA CE to build Java or Kotlin applications with, but in a Kubernetes environment.
-
-This will use the `ghcr.io/auguwu/coder-images/intellij:latest` image by default to run the Docker engine.
+## Coder Template
+This project also includes a base [Coder template](./template) to use when using the images. It's personally what I use to develop my own projects with Coder. Refer to the directory's README for more information.
 
 ## License
 **coder-images** is released under the **MIT License** with love by me, Noel. <3

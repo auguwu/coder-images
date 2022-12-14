@@ -1,5 +1,5 @@
 # 💐💚 coder-images: Optimized, and easy Docker images and Coder templates to use in your everyday work!
-# Copyright (c) 2022 Noel <cutie@floofy.dev>
+# Copyright (c) 2022-2023 Noel <cutie@floofy.dev>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -27,26 +27,25 @@ ENV USERNAME=noel
 USER root
 
 # Set version environment variables
-ENV GRADLE_VERSION="7.5.1"
+ENV GRADLE_VERSION="7.6"
 ENV MAVEN_VERSION="3.8.6"
 
 # install required things
 RUN DEBIAN_FRONTEND="noninteractive" apt install -y wget libarchive-tools
 
-# Install Temurin 18
+# Install Temurin 19
 RUN wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | sudo apt-key add -
 RUN echo "deb https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" | sudo tee /etc/apt/sources.list.d/adoptium.list
 RUN DEBIAN_FRONTEND="noninteractive" apt update && \
-  DEBIAN_FRONTEND="noninteractive" apt install -y temurin-18-jdk
+  DEBIAN_FRONTEND="noninteractive" apt install -y temurin-19-jdk
 
 # Install packages!
-RUN GRADLE_DOWNLOAD_URL="https://services.gradle.org/distributions/gradle-7.5.1-all.zip"; \
+RUN GRADLE_DOWNLOAD_URL="https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-all.zip"; \
   MAVEN_DOWNLOAD_URL="https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz"; \
-  mkdir -p /opt/java/jdk; \
   mkdir -p /opt/gradle; \
   mkdir -p /opt/maven; \
-  curl -L -s ${MAVEN_DOWNLOAD_URL}   | tar xfz - -C /opt/maven --strip-components=1; \
-  curl -L -s ${GRADLE_DOWNLOAD_URL}  | bsdtar xfz - --strip-components=1 -C /opt/gradle;
+  curl -L ${MAVEN_DOWNLOAD_URL}   | tar xfz - -C /opt/maven --strip-components=1; \
+  curl -L ${GRADLE_DOWNLOAD_URL}  | bsdtar xfz - --strip-components=1 -C /opt/gradle;
 
 RUN chmod +x /opt/gradle/bin/gradle
 

@@ -1,5 +1,5 @@
 # 💐💚 coder-images: Optimized, and easy Docker images and Coder templates to use in your everyday work!
-# Copyright (c) 2022 Noel <cutie@floofy.dev>
+# Copyright (c) 2022-2023 Noel <cutie@floofy.dev>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -44,11 +44,11 @@ RUN groupadd -g ${USER_GID} ${USERNAME} && \
 RUN git lfs install --system
 
 # stuff here
-ENV GITHUB_CLI_VERSION="2.19.0"
-ENV CODER_CLI_VERSION="0.11.0"
-ENV TERRAFORM_VERSION="1.3.3"
-ENV KUBECTL_VERSION="1.25.3"
-ENV HELM_VERSION="3.10.1"
+ENV GITHUB_CLI_VERSION="2.20.2"
+ENV CODER_CLI_VERSION="0.13.2"
+ENV TERRAFORM_VERSION="1.3.6"
+ENV KUBECTL_VERSION="1.26.0"
+ENV HELM_VERSION="3.10.2"
 
 # Get current architecture and download software here
 # also this looks like shit, i know!
@@ -72,12 +72,10 @@ RUN set -eux; \
   esac; \
   mkdir -p /opt/coder/cli /opt/github/cli /opt/hashicorp/terraform /opt/helm; \
   curl -L -o /usr/local/bin/kubectl ${KUBECTL_DOWNLOAD_URL}; \
-  curl -L -s ${CODER_DOWNLOAD_URL}      | tar xfz - -C /opt/coder/cli --strip-components=1; \
-  curl -L -s ${GITHUB_CLI_DOWNLOAD_URL} | tar xfz - -C /opt/github/cli --strip-components=1; \
-  curl -L -s ${HELM_DOWNLOAD_URL}       | tar xfz - -C /opt/helm --strip-components=1; \
-  curl -L -o /tmp/terraform.zip ${TERRAFORM_DOWNLOAD_URL}; \
-  unzip -qd /opt/hashicorp/terraform /tmp/terraform.zip; \
-  rm /tmp/*.zip;
+  curl -L ${CODER_DOWNLOAD_URL}      | tar xfz - -C /opt/coder/cli --strip-components=1; \
+  curl -L ${GITHUB_CLI_DOWNLOAD_URL} | tar xfz - -C /opt/github/cli --strip-components=1; \
+  curl -L ${HELM_DOWNLOAD_URL}       | tar xfz - -C /opt/helm --strip-components=1; \
+  curl -L ${TERRAFORM_DOWNLOAD_URL}  | bsdtar xfz - --strip-components=1 -C /opt/hashicorp/terraform;
 
 # Let the user execute `kubectl`
 RUN chmod +x /usr/local/bin/kubectl

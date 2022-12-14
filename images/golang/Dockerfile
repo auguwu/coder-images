@@ -1,5 +1,5 @@
 # 💐💚 coder-images: Optimized, and easy Docker images and Coder templates to use in your everyday work!
-# Copyright (c) 2022 Noel <cutie@floofy.dev>
+# Copyright (c) 2022-2023 Noel <cutie@floofy.dev>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -27,8 +27,8 @@ ENV USERNAME=noel
 USER root
 
 # Put versions in environment variables
-ENV GOLANG_VERSION="1.19.2"
-ENV GORELEASER_VERSION="1.12.3"
+ENV GOLANG_VERSION="1.19.4"
+ENV GORELEASER_VERSION="1.13.1"
 ENV GOLANGCI_VERSION="1.50.1"
 
 # Install packages here.
@@ -49,9 +49,9 @@ RUN set -eux; \
       ;; \
   esac; \
   mkdir -p /opt/golang/go /opt/golang/tools/golangci /opt/golang/tools/goreleaser; \
-  curl -L -s ${GO_DOWNLOAD_URL}         | tar xfz - -C /opt/golang/go --strip-components=1 --no-same-owner; \
-  curl -L -s ${GORELEASER_DOWNLOAD_URL} | tar xfz - -C /opt/golang/tools/goreleaser --no-same-owner; \
-  curl -L -s ${GOLANGCI_DOWNLOAD_URL}   | tar xfz - -C /opt/golang/tools/golangci --strip-components 1 --no-same-owner;
+  curl -L ${GO_DOWNLOAD_URL}         | tar xfz - -C /opt/golang/go --strip-components=1 --no-same-owner; \
+  curl -L ${GORELEASER_DOWNLOAD_URL} | tar xfz - -C /opt/golang/tools/goreleaser --no-same-owner; \
+  curl -L ${GOLANGCI_DOWNLOAD_URL}   | tar xfz - -C /opt/golang/tools/golangci --strip-components 1 --no-same-owner;
 
 USER ${USERNAME}
 

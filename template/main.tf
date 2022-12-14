@@ -1,5 +1,5 @@
 # 💐💚 coder-images: Optimized, and easy Docker images and Coder templates to use in your everyday work!
-# Copyright (c) 2022 Noel <cutie@floofy.dev>
+# Copyright (c) 2022-2023 Noel <cutie@floofy.dev>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -23,12 +23,12 @@ terraform {
   required_providers {
     coder = {
       source  = "coder/coder"
-      version = "0.6.0"
+      version = "0.6.5"
     }
 
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      version = "2.14.0"
+      version = "2.16.1"
     }
   }
 }
@@ -37,58 +37,16 @@ provider "kubernetes" {
   config_path = var.use_host_kubeconfig == true ? "~/.kube/config" : null
 }
 
-variable "workspace_name" {
-  description = "Workspace name to use for Kubernetes pod & volume"
-  type        = string
-}
-
-variable "dotfiles_repo" {
-  description = "The repository URL to your dotfiles configuration"
-  default     = ""
-  type        = string
-}
-
-variable "use_host_kubeconfig" {
-  description = "This variable allows you to use the host pod's Kubernetes configuration"
-  sensitive   = true
-  default     = false
-  type        = bool
-}
-
-variable "namespace" {
-  description = "Kubernetes namespace to use for the pod."
-  default     = "noel-system"
-  type        = string
-}
-
-variable "docker_image_type" {
-  description = "The Docker image flavour to use"
-  default     = "node"
-  type        = string
-
-  validation {
-    condition     = contains(["node", "golang", "rust"], var.docker_image_type)
-    error_message = "Docker image flavour is not a valid one~!"
-  }
-}
-
-variable "git_repository" {
-  description = "The Git repository to initialize, if any."
-  default     = ""
-  type        = string
-}
-
 data "coder_workspace" "me" {
 }
 
 resource "coder_agent" "main" {
-  arch = "arm64"
-  dir  = "/home/noel"
+  arch = "amd64"
+  dir  = var.home_dir
   os   = "linux"
 
   startup_script = <<-EOL
   #!/bin/bash
-
   if [ ! -f ~/.profile ]; then
     cp /etc/skel/.profile $HOME
   fi
@@ -97,40 +55,53 @@ resource "coder_agent" "main" {
     cp /etc/skel/.bashrc $HOME
   fi
 
-  # install and start code-server
-  curl -fsSL https://code-server.dev/install.sh | sh
-  code-server --auth none --port 3621
+  # Install the Docker engine
+  sudo apt update
+  sudo apt install ca-certificates curl gnupg lsb-release
+  sudo mkdir -p /etc/apt/keyrings
 
-  ${var.git_repository != "" ? "sudo git clone ${var.git_repository} /workspace" : ""}
+  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+  sudo apt update && sudo apt install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+  sudo systemctl enable --now docker
+  sudo usermod -aG docker $USER
+
+  # Install code-server if enabled
+  ${var.install_codeserver == true ? "curl -fsSL https://code-server.dev/install.sh | sh" : ""}
+  ${var.install_codeserver == true ? "code-server --auth none --port 3621" : ""}
+
+  # Clone the given repository if needed
+  ${var.git_repository != "" ? "git clone ${var.git_repository} ${var.home_dir}/workspace" : ""}
   EOL
 }
 
 resource "coder_app" "code-server" {
-  agent_id     = coder_agent.main.id
-  slug         = "code-server"
-  display_name = "VSCode"
-  url          = "http://localhost:3621/?folder=${var.git_repository != "" ? "/workspace" : "/home/noel"}"
-  icon         = "/icon/code.svg"
+  count    = var.install_codeserver ? 1 : 0
+  agent_id = coder_agent.main.id
+  slug     = "code-server"
+  display  = "Visual Studio Code"
+  url      = "http://localhost:3621/?folder=${var.git_repository != "" ? "${var.home_dir}/workspace" : var.home_dir}"
+  icon     = "/icon/code.svg"
 
   healthcheck {
-    url       = "http://localhost:3621/healthz"
-    interval  = 2
     threshold = 10
+    interval  = 10
+    url       = "http://localhost:3621/healthz"
   }
 }
 
-resource "kubernetes_persistent_volume_claim" "awa" {
+resource "kubernetes_persistent_volume_claim" "workspace" {
+  count = var.pvc_name != "" ? 0 : 1
   metadata {
     namespace = var.namespace
-    name      = var.workspace_name
+    name      = "workspace-pvc"
   }
 
   wait_until_bound = false
   spec {
-    access_modes = ["ReadWriteOnce"]
+    access_modes = ["ReadWriteMany"]
     resources {
       requests = {
-        storage = "10Gi"
+        storage = "15Gi"
       }
     }
   }
@@ -138,10 +109,10 @@ resource "kubernetes_persistent_volume_claim" "awa" {
 
 resource "kubernetes_pod" "workspace" {
   metadata {
-    name      = var.workspace_name
     namespace = var.namespace
+    name      = "coder-workspace"
 
-    labels = {
+    annotations = {
       "k8s.noelware.cloud/component" = "coder",
       "k8s.noelware.cloud/template"  = "code-server"
     }
@@ -154,10 +125,10 @@ resource "kubernetes_pod" "workspace" {
     }
 
     container {
-      name              = "workspace"
-      image             = "ghcr.io/auguwu/coder-images/${var.docker_image_type}:latest"
-      command           = ["/bin/bash", "-c", coder_agent.main.init_script]
       image_pull_policy = "Always"
+      command           = ["/bin/bash", "-c", coder_agent.main.init_script]
+      image             = var.custom_image != "" ? var.custom_image : "ghcr.io/auguwu/coder-images/${var.base_image}:latest"
+      name              = "coder-workspace"
 
       env {
         name  = "CODER_ACCESS_URL"
@@ -183,7 +154,7 @@ resource "kubernetes_pod" "workspace" {
     volume {
       name = "workspace"
       persistent_volume_claim {
-        claim_name = var.workspace_name
+        claim_name = "workspace-pvc"
         read_only  = false
       }
     }

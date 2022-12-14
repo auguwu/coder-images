@@ -8,6 +8,6 @@ This is the Docker image that bundles the Go compiler with **goreleaser** and **
 | GoReleaser | Deliver Go binaries as fast and easily as possible | [v1.12.3][goreleaser] |
 | Golang CI  | Fast linters Runner for Go                         | [v1.50.1][golangci]   |
 
-[goreleaser]: https://github.com/goreleaser/goreleaser/releases/tag/v1.12.3
+[goreleaser]: https://github.com/goreleaser/goreleaser/releases/tag/v1.13.1
 [golangci]:   https://github.com/golangci/golangci-lint/releases/tag/v1.50.1
-[golang]:     https://github.com/golang/go/releases/tag/go1.19.2
+[golang]:     https://github.com/golang/go/releases/tag/go1.19.4
