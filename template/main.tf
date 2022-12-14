@@ -33,8 +33,11 @@ terraform {
   }
 }
 
+
 provider "kubernetes" {
   host = var.kube_host
+  token = var.kube_in_cluster == true ? file("/run/secrets/kubernetes.io/serviceaccount/token") : ""
+  cluster_ca_certificate = var.kube_in_cluster == true ? file("/run/secrets/kubernetes.io/serviceaccount/ca.crt") : ""
   config_path = var.use_host_kubeconfig == true ? "~/.kube/config" : null
 }
 
@@ -79,7 +82,7 @@ resource "coder_app" "code-server" {
   count    = var.install_codeserver ? 1 : 0
   agent_id = coder_agent.main.id
   slug     = "code-server"
-  display  = "Visual Studio Code"
+  display_name  = "Visual Studio Code"
   url      = "http://localhost:3621/?folder=${var.git_repository != "" ? "${var.home_dir}/workspace" : var.home_dir}"
   icon     = "/icon/code.svg"
 

@@ -69,7 +69,7 @@ variable "git_repository" {
 variable "install_codeserver" {
   description = "If the startup script should install Code Server"
   default     = false
-  type        = string
+  type        = bool
 }
 
 variable "dotfiles_repo" {
@@ -86,6 +86,12 @@ variable "namespace" {
 
 variable "kube_host" {
   description = "Kubernetes hostname"
-  default = "localhost"
+  default = "https://localhost"
   type = string
+}
+
+variable "kube_in_cluster" {
+  description = "Whether or not to use a default in cluster configuration for Kubernetes resources."
+  default = false
+  type = bool
 }
