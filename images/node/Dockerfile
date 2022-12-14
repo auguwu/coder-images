@@ -44,9 +44,11 @@ RUN set -eux;                                                                   
             ;;                                                                                                     \
     esac;                                                                                                          \
     mkdir -p /opt/nodejs;                                                                                          \
-    curl -L ${NODE_DOWNLOAD_URL} | bsdtar xvf - --strip-components=1 -C /opt/nodejs
+    curl -L ${NODE_DOWNLOAD_URL} | bsdtar xf - --strip-components=1 -C /opt/nodejs
+
+ENV PATH=$PATH:/opt/nodejs/bin
+RUN npm i -g yarn pnpm
 
 USER ${USERNAME}
 
 ENV PATH=$PATH:/opt/nodejs/bin
-RUN sudo npm i -g yarn pnpm
