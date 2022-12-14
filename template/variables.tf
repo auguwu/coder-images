@@ -83,3 +83,9 @@ variable "namespace" {
   default     = "august"
   type        = string
 }
+
+variable "kube_host" {
+  description = "Kubernetes hostname"
+  default = "localhost"
+  type = string
+}

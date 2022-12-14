@@ -34,6 +34,7 @@ terraform {
 }
 
 provider "kubernetes" {
+  host = var.kube_host
   config_path = var.use_host_kubeconfig == true ? "~/.kube/config" : null
 }
 
