@@ -44,7 +44,7 @@ variable "base_image" {
 
   validation {
     condition     = contains(["java", "golang", "base", "node", "rust", ""], var.base_image)
-    error_message = "Unknown base image to use [${var.base_image}]"
+    error_message = "Unknown base image to use"
   }
 }
 
