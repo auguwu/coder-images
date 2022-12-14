@@ -81,8 +81,8 @@ jobs:
       uses: docker/build-push-action@v3
       with:
         platforms: linux/amd64,linux/arm64
-        context: images/base
-        file: ./images/base/Dockerfile
+        context: images/${{matrix.image}}
+        file: ./images/${{matrix.image}}/Dockerfile
         push: true
         tags: |
           ghcr.io/auguwu/coder-images/${{matrix.image}}:${{steps.tag.outputs.version}},
