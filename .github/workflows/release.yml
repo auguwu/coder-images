@@ -56,7 +56,7 @@ jobs:
           ghcr.io/auguwu/coder-images/base:latest
   images:
     name: coder-images/${{matrix.image}} Pipeline
-    runs-on: ${{matrix.image.runner}}
+    runs-on: ubuntu-latest
     needs: [base-image]
     strategy:
       matrix:
