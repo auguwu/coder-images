@@ -50,8 +50,8 @@ jobs:
         file: ./images/base/Dockerfile
         push: true
         tags: |
-          ghcr.io/auguwu/coder-images/base:${{steps.tag.outputs.version}}-${{matrix.suffix}},
-          ghcr.io/auguwu/coder-images/base:latest-${{matrix.suffix}}
+          ghcr.io/auguwu/coder-images/base:${{steps.tag.outputs.version}},
+          ghcr.io/auguwu/coder-images/base:latest
   images:
     name: coder-images/${{matrix.image}} Pipeline
     runs-on: ${{matrix.image.runner}}
