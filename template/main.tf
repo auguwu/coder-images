@@ -151,6 +151,7 @@ resource "kubernetes_pod" "workspace" {
       }
 
       security_context {
+        allow_privilege_escalation = false
         run_as_user = "1000"
       }
     }
