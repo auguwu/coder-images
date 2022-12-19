@@ -52,5 +52,4 @@ RUN chmod +x /opt/gradle/bin/gradle
 # Go back as the user
 USER ${USERNAME}
 
-ENV JAVA_HOME=/opt/java/jdk
-ENV PATH=$PATH:$JAVA_HOME/bin:/opt/maven/bin:/opt/gradle/bin
+ENV PATH=$PATH:/opt/maven/bin:/opt/gradle/bin
