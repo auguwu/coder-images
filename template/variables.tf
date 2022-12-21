@@ -19,23 +19,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-variable "pvc_name" {
-  description = "The existing PVC if one exists"
-  default     = ""
-  type        = string
-}
-
-variable "use_host_kubeconfig" {
-  description = "If the template should use the host's Kubernetes configuration or not."
-  default     = true
-  type        = bool
-}
-
-variable "kube_context" {
-  description = "The context name of the cluster to connect to."
-  default     = ""
-  type        = string
-}
 
 variable "base_image" {
   description = "If `custom_image` is set to a string that is a valid Docker image, this will be skipped. If not, this will use a base image that is from Noel's Coder images (https://github.com/auguwu/coder-images) from this list"
@@ -76,22 +59,4 @@ variable "dotfiles_repo" {
   description = "The repository URL to your dotfiles configuration"
   default     = ""
   type        = string
-}
-
-variable "namespace" {
-  description = "Kubernetes namespace to use for the pod."
-  default     = "august"
-  type        = string
-}
-
-variable "kube_host" {
-  description = "Kubernetes hostname"
-  default = "https://localhost"
-  type = string
-}
-
-variable "kube_in_cluster" {
-  description = "Whether or not to use a default in cluster configuration for Kubernetes resources."
-  default = false
-  type = bool
 }

@@ -26,19 +26,15 @@ terraform {
       version = "0.6.5"
     }
 
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = "2.16.1"
+    docker = {
+      version = "2.22.0"
+      source  = "kreuzwerker/docker"
     }
   }
 }
 
-
-provider "kubernetes" {
-  host = var.kube_host
-  token = var.kube_in_cluster == true ? file("/run/secrets/kubernetes.io/serviceaccount/token") : ""
-  cluster_ca_certificate = var.kube_in_cluster == true ? file("/run/secrets/kubernetes.io/serviceaccount/ca.crt") : ""
-  config_path = var.use_host_kubeconfig == true ? "~/.kube/config" : null
+provider "docker" {
+  host = "unix:///var/run/docker.sock"
 }
 
 data "coder_workspace" "me" {
@@ -79,12 +75,12 @@ resource "coder_agent" "main" {
 }
 
 resource "coder_app" "code-server" {
-  count    = var.install_codeserver ? 1 : 0
-  agent_id = coder_agent.main.id
-  slug     = "code-server"
-  display_name  = "Visual Studio Code"
-  url      = "http://localhost:3621/?folder=${var.git_repository != "" ? "${var.home_dir}/workspace" : var.home_dir}"
-  icon     = "/icon/code.svg"
+  count        = var.install_codeserver ? 1 : 0
+  agent_id     = coder_agent.main.id
+  slug         = "code-server"
+  display_name = "Visual Studio Code"
+  url          = "http://localhost:3621/?folder=${var.git_repository != "" ? "${var.home_dir}/workspace" : var.home_dir}"
+  icon         = "/icon/code.svg"
 
   healthcheck {
     threshold = 10
@@ -93,75 +89,22 @@ resource "coder_app" "code-server" {
   }
 }
 
-resource "kubernetes_persistent_volume_claim" "workspace" {
-  count = var.pvc_name != "" ? 0 : 1
-  metadata {
-    namespace = var.namespace
-    name      = "workspace-pvc"
-  }
-
-  wait_until_bound = false
-  spec {
-    access_modes = ["ReadWriteMany"]
-    resources {
-      requests = {
-        storage = "15Gi"
-      }
-    }
-  }
+resource "docker_volume" "coder-workspace" {
+  name = "${data.coder_workspace.me.name}-coder-workspace"
 }
 
-resource "kubernetes_pod" "workspace" {
-  metadata {
-    namespace = var.namespace
-    name      = "coder-workspace"
+resource "docker_container" "workspace" {
+  env = [
+    "CODER_AGENT_TOKEN=${coder_agent.main.token}",
+    "CODER_ACCESS_URL=https://coder.floofy.dev"
+  ]
 
-    annotations = {
-      "k8s.noelware.cloud/component" = "coder",
-      "k8s.noelware.cloud/template"  = "code-server"
-    }
+  volumes {
+    container_path = "/home/noel"
+    host_path      = docker_volume.coder-workspace.mountpoint
   }
 
-  spec {
-    security_context {
-      run_as_user = "1000"
-      fs_group    = "1000"
-    }
-
-    container {
-      image_pull_policy = "Always"
-      command           = ["/bin/bash", "-c", coder_agent.main.init_script]
-      image             = var.custom_image != "" ? var.custom_image : "ghcr.io/auguwu/coder-images/${var.base_image}:latest"
-      name              = "coder-workspace"
-
-      env {
-        name  = "CODER_ACCESS_URL"
-        value = "https://coder.floofy.dev"
-      }
-
-      env {
-        name  = "CODER_AGENT_TOKEN"
-        value = coder_agent.main.token
-      }
-
-      volume_mount {
-        mount_path = "/home/noel"
-        read_only  = false
-        name       = "workspace"
-      }
-
-      security_context {
-        allow_privilege_escalation = false
-        run_as_user = "1000"
-      }
-    }
-
-    volume {
-      name = "workspace"
-      persistent_volume_claim {
-        claim_name = "workspace-pvc"
-        read_only  = false
-      }
-    }
-  }
+  command = ["/bin/bash", "-c", coder_agent.main.init_script]
+  image   = var.custom_image != "" ? var.custom_image : "ghcr.io/auguwu/coder-images/${var.base_image}:latest"
+  name    = data.coder_workspace.me.name
 }
