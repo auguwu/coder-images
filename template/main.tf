@@ -55,15 +55,22 @@ resource "coder_agent" "main" {
     cp /etc/skel/.bashrc $HOME
   fi
 
-  # Install the Docker engine
-  sudo apt update
-  sudo apt install ca-certificates curl gnupg lsb-release
-  sudo mkdir -p /etc/apt/keyrings
+  # Fix folder permissions since root owns /home/noel for some reason???
+  sudo chown -R noel:noel /home/noel
 
-  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-  sudo apt update && sudo apt install docker-ce docker-ce-cli containerd.io docker-compose-plugin
-  sudo systemctl enable --now docker
-  sudo usermod -aG docker $USER
+  # Install the Docker engine
+  #sudo apt update
+  #DEBIAN_FRONTEND=noninteractive sudo apt install -y ca-certificates curl gnupg lsb-release
+  #sudo mkdir -p /etc/apt/keyrings
+
+  #curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+  #echo \
+  #  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  #  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list
+  
+  #sudo apt update && DEBIAN_FRONTEND=noninteractive sudo apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+  #sudo systemctl enable --now docker
+  #sudo usermod -aG docker $USER
 
   # Install code-server if enabled
   ${var.install_codeserver == true ? "curl -fsSL https://code-server.dev/install.sh | sh" : ""}
