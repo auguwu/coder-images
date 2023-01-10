@@ -62,7 +62,7 @@ jobs:
     needs: [base-image]
     strategy:
       matrix:
-        image: [node, rust, java, golang]
+        image: [node, rust, java, golang, dotnet]
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
