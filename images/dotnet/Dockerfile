@@ -22,35 +22,25 @@
 FROM ghcr.io/auguwu/coder-images/base
 
 ENV USERNAME=noel
+ENV DOTNET_VERSION=7.0.101
+ENV DEBIAN_FRONTEND=noninteractive
 
-# Run as root so we don't have to repeat sudo
 USER root
 
-# rust version to install
-ENV RUSTUP_VERSION="1.25.1"
-ENV RUST_VERSION="1.65.0"
-
-# Install the Rust (minimal) toolchain
-RUN apt install -y --no-install-recommends ca-certificates gcc libc6-dev
-
-# We need to install Rust on the user so it can properly add it to the path.
-USER ${USERNAME}
-
-RUN set -eux; \
+RUN apt update && apt install -y build-essential zlib1g openssl
+RUN set -eux;                         \
   arch="$(dpkg --print-architecture)"; \
-  case "${arch}" in \
-    aarch64|arm64) \
-      ARCH="arm64"; \
-      ARCH_TRIPLE="aarch64-unknown-linux-gnu"; \
-      RUSTUP_INSTALL_URL="https://static.rust-lang.org/rustup/archive/${RUSTUP_VERSION}/${ARCH_TRIPLE}/rustup-init"; \
+  case "${arch}" in                   \
+    aarch64|arm64)                    \
+      DOTNET_DOWNLOAD_URL="https://download.visualstudio.microsoft.com/download/pr/caa0e6fb-770c-4b21-ba55-30154a7a9e11/3231af451861147352aaf43cf23b16ea/dotnet-sdk-${DOTNET_VERSION}-linux-arm64.tar.gz"; \
       ;; \
-    x86_64|amd64) \
-      ARCH="amd64"; \
-      ARCH_TRIPLE="x86_64-unknown-linux-gnu"; \
-      RUSTUP_INSTALL_URL="https://static.rust-lang.org/rustup/archive/${RUSTUP_VERSION}/${ARCH_TRIPLE}/rustup-init"; \
+    amd64|x86_64) \
+      DOTNET_DOWNLOAD_URL="https://download.visualstudio.microsoft.com/download/pr/7fe73a07-575d-4cb4-b2d3-c23d89e5085f/d8b2b7e1c0ed99c1144638d907c6d152/dotnet-sdk-${DOTNET_VERSION}-linux-x64.tar.gz"; \
       ;; \
-  esac; \
-  curl -sL -o /tmp/rustup-init ${RUSTUP_INSTALL_URL}; \
-  chmod +x /tmp/rustup-init && /tmp/rustup-init -y --no-modify-path --profile minimal --default-toolchain ${RUST_VERSION} --default-host=${ARCH_TRIPLE};
+    esac; \
+  mkdir -p /opt/dotnet; \
+  curl -L ${DOTNET_DOWNLOAD_URL} | tar xfz - -C /opt/dotnet --strip-components=1;
 
-ENV PATH="$PATH:/home/${USERNAME}/.cargo/bin"
+USER ${USERNAME}
+ENV PATH=$PATH:/opt/dotnet
+ENV DOTNET_CLI_TELEMETRY_OPTOUT=1
