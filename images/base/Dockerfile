@@ -44,11 +44,11 @@ RUN groupadd -g ${USER_GID} ${USERNAME} && \
 RUN git lfs install --system
 
 # stuff here
-ENV GITHUB_CLI_VERSION="2.20.2"
-ENV CODER_CLI_VERSION="0.13.2"
-ENV TERRAFORM_VERSION="1.3.6"
+ENV GITHUB_CLI_VERSION="2.21.2"
+ENV CODER_CLI_VERSION="0.14.1"
+ENV TERRAFORM_VERSION="1.3.7"
 ENV KUBECTL_VERSION="1.26.0"
-ENV HELM_VERSION="3.10.2"
+ENV HELM_VERSION="3.10.3"
 
 # Get current architecture and download software here
 # also this looks like shit, i know!
