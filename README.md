@@ -17,6 +17,9 @@ This installs the following packages:
 ### `ghcr.io/auguwu/coder-images/golang`
 This image extends [ghcr.io/auguwu/coder-images/base](#ghcrioauguwucoder-imagesbase), but adds the **Go** compiler installed with GoReleaser and **golangci-lint**
 
+### `ghcr.io/auguwu/coder-images/dotnet`
+This image extends from the [ghcr.io/auguwu/coder-images/base][#ghcrioauguwucoder-imagesbase] but adds the **.NET Runtime**.
+
 ### `ghcr.io/auguwu/coder-images/java`
 This image extends [ghcr.io/auguwu/coder-images/base](#ghcrioauguwucoder-imagesbase), but bundles Adoptium JDK 19, Gradle, and Maven
 
@@ -25,9 +28,6 @@ This image extends [ghcr.io/auguwu/coder-images/base](#ghcrioauguwucoder-imagesb
 
 ### `ghcr.io/auguwu/coder-images/rust`
 This image extends [ghcr.io/auguwu/coder-images/base](#ghcrioauguwucoder-imagesbase), but bundles all the Rust components like **rustc**, **Cargo**, **clippy**, and **rustfmt**.
-
-### `ghcr.io/auguwu/coder-images/intellij`
-This image extends [ghcr.io/auguwu/coder-images/java](#ghcrioauguwucoder-imagesjava), but adds the IntelliJ IDEA IDE into use.
 
 ## Coder Template
 This project also includes a base [Coder template](./template) to use when using the images. It's personally what I use to develop my own projects with Coder. Refer to the directory's README for more information.
