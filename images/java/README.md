@@ -10,4 +10,4 @@ This image extends the [base image](https://github.com/auguwu/coder-images/pkgs/
 
 [temurin-release]: https://github.com/adoptium/temurin19-binaries/releases/tag/jdk-19.0.1%2B10
 [gradle-release]:  https://github.com/gradle/gradle/releases/tag/v7.6.0
-[maven-release]:   https://github.com/apache/maven/releases/tag/maven-3.8.6
+[maven-release]:   https://github.com/apache/maven/releases/tag/maven-3.8.7

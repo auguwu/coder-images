@@ -22,8 +22,10 @@
 FROM ghcr.io/auguwu/coder-images/base
 
 ENV USERNAME=noel
-ENV DOTNET_VERSION=7.0.101
+ENV DOTNET_VERSION=7.0.102
 ENV DEBIAN_FRONTEND=noninteractive
+ENV X64_PR="c646b288-5d5b-4c9c-a95b-e1fad1c0d95d/e13d71d48b629fe3a85f5676deb09e2d"
+ENV ARM_PR="72ec0dc2-f425-48c3-97f1-dc83740ba400/78e8fa01fa9987834fa01c19a23dd2e7"
 
 USER root
 
@@ -32,10 +34,10 @@ RUN set -eux;                         \
   arch="$(dpkg --print-architecture)"; \
   case "${arch}" in                   \
     aarch64|arm64)                    \
-      DOTNET_DOWNLOAD_URL="https://download.visualstudio.microsoft.com/download/pr/caa0e6fb-770c-4b21-ba55-30154a7a9e11/3231af451861147352aaf43cf23b16ea/dotnet-sdk-${DOTNET_VERSION}-linux-arm64.tar.gz"; \
+      DOTNET_DOWNLOAD_URL="https://download.visualstudio.microsoft.com/download/pr/${ARM_PR}/dotnet-sdk-${DOTNET_VERSION}-linux-arm64.tar.gz"; \
       ;; \
     amd64|x86_64) \
-      DOTNET_DOWNLOAD_URL="https://download.visualstudio.microsoft.com/download/pr/7fe73a07-575d-4cb4-b2d3-c23d89e5085f/d8b2b7e1c0ed99c1144638d907c6d152/dotnet-sdk-${DOTNET_VERSION}-linux-x64.tar.gz"; \
+      DOTNET_DOWNLOAD_URL="https://download.visualstudio.microsoft.com/download/pr/${X64_PR}/dotnet-sdk-${DOTNET_VERSION}-linux-x64.tar.gz"; \
       ;; \
     esac; \
   mkdir -p /opt/dotnet; \

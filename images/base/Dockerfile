@@ -45,10 +45,10 @@ RUN git lfs install --system
 
 # stuff here
 ENV GITHUB_CLI_VERSION="2.21.2"
-ENV CODER_CLI_VERSION="0.14.1"
+ENV CODER_CLI_VERSION="0.14.3"
 ENV TERRAFORM_VERSION="1.3.7"
-ENV KUBECTL_VERSION="1.26.0"
-ENV HELM_VERSION="3.10.3"
+ENV KUBECTL_VERSION="1.26.1"
+ENV HELM_VERSION="3.11.0"
 
 # Get current architecture and download software here
 # also this looks like shit, i know!

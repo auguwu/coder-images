@@ -28,7 +28,7 @@ USER root
 
 # Set version environment variables
 ENV GRADLE_VERSION="7.6"
-ENV MAVEN_VERSION="3.8.6"
+ENV MAVEN_VERSION="3.8.7"
 
 # install required things
 RUN DEBIAN_FRONTEND="noninteractive" apt install -y wget libarchive-tools
