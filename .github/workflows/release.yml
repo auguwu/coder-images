@@ -98,8 +98,8 @@ jobs:
         context: images/${{matrix.image}}
         file: ./images/${{matrix.image}}/Dockerfile
         push: true
-        cache-from: type=gha,scope=${{matrix-image}}
-        cache-to: type=gha,scope=${{matrix-image}}
+        cache-from: type=gha,scope=${{matrix.image}}
+        cache-to: type=gha,scope=${{matrix.image}}
         tags: |
           ghcr.io/auguwu/coder-images/${{matrix.image}}:${{steps.tag.outputs.version}},
           ghcr.io/auguwu/coder-images/${{matrix.image}}:latest
