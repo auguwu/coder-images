@@ -53,5 +53,4 @@ RUN set -eux; \
   curl -sL -o /tmp/rustup-init ${RUSTUP_INSTALL_URL}; \
   chmod +x /tmp/rustup-init && /tmp/rustup-init -y --no-modify-path --profile minimal --default-toolchain ${RUST_VERSION} --default-host=${ARCH_TRIPLE};
 
-RUN rm /tmp/rustup-init
 ENV PATH="$PATH:/home/${USERNAME}/.cargo/bin"
