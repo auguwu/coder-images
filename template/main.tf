@@ -86,9 +86,29 @@ resource "docker_volume" "coder-workspace" {
   name = "${data.coder_workspace.me.name}-coder-workspace"
 }
 
+resource "docker_network" "private_network" {
+  name = "${data.coder_workspace.me.name}-network"
+}
+
+resource "docker_container" "dind" {
+  count      = var.enable_dind == true ? 1 : 0
+  image      = "docker:dind"
+  name       = "${data.coder_workspace.me.name}-dind"
+  entrypoint = ["dockerd", "-H", "tcp://0.0.0.0:2375"]
+  privileged = true
+
+  networks_advanced {
+    name = docker_network.private_network.name
+  }
+}
+
 resource "docker_container" "workspace" {
   count = data.coder_workspace.me.start_count
-  env = [
+  env = var.enable_dind == true ? [
+    "CODER_AGENT_TOKEN=${coder_agent.main.token}",
+    "CODER_ACCESS_URL=https://coder.floofy.dev",
+    "DOCKER_HOST=${docker_container.dind.name}:2375"
+    ] : [
     "CODER_AGENT_TOKEN=${coder_agent.main.token}",
     "CODER_ACCESS_URL=https://coder.floofy.dev"
   ]
@@ -101,4 +121,9 @@ resource "docker_container" "workspace" {
   command = ["/bin/bash", "-c", coder_agent.main.init_script]
   image   = var.custom_image != "" ? var.custom_image : "ghcr.io/auguwu/coder-images/${var.base_image}:latest"
   name    = data.coder_workspace.me.name
+
+
+  networks_advanced {
+    name = docker_network.private_network.name
+  }
 }

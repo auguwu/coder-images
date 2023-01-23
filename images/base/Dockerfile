@@ -29,10 +29,13 @@ ENV USERNAME=noel \
   USER_UID=1000 \
   USER_GID=1000
 
+ENV DEBIAN_FRONTEND=noninteractive
+
 # Install needed packages
-RUN DEBIAN_FRONTEND=noninteractive apt update && \
-  DEBIAN_FRONTEND=noninteractive apt upgrade -y && \
-  DEBIAN_FRONTEND=noninteractive apt install -y sudo git curl neofetch git-lfs ca-certificates unzip zip bash vim nano python3 python3-pip libarchive-tools
+RUN apt update && \
+  apt upgrade -y && \
+  apt install -y sudo git curl neofetch git-lfs ca-certificates \
+                unzip zip bash vim nano python3 python3-pip libarchive-tools gnupg lsb-release
 
 # Setup the user environment
 RUN groupadd -g ${USER_GID} ${USERNAME} && \
@@ -42,6 +45,16 @@ RUN groupadd -g ${USER_GID} ${USERNAME} && \
 
 # Configure git-lfs
 RUN git lfs install --system
+
+# Install Docker
+RUN mkdir -p /etc/apt/keyrings && \
+  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg && \
+  echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+RUN apt update && apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+RUN usermod -aG docker ${USERNAME}
 
 # stuff here
 ENV GITHUB_CLI_VERSION="2.21.2"

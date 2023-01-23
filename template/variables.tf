@@ -19,6 +19,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+variable "enable_dind" {
+  description = "If the template should initialize a sidecar container for Docker in Docker usage. Don't enable this if the host can't run privileged containers."
+  default     = false
+  type        = bool
+}
 
 variable "base_image" {
   description = "The base image from Noel's Coder images that should be used."
@@ -26,7 +31,7 @@ variable "base_image" {
   type        = string
 
   validation {
-    condition     = contains(["java", "golang", "base", "node", "rust", ""], var.base_image)
+    condition     = contains(["java", "golang", "base", "node", "rust", "dotnet", ""], var.base_image)
     error_message = "Unknown base image to use"
   }
 }
