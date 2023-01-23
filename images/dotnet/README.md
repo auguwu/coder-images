@@ -6,4 +6,4 @@ This image extends from the [base image](https://github.com/auguwu/coder-images/
 | -------- | ---------------------------------------------------------- | ---------------------- |
 | .NET SDK | Free. Cross-platform. Open source. Build any app with .NET | [v7.0.102][dotnet-sdk] |
 
-[dotnet-sdk]: https://github.com/dotnet/sdk/releases/tag/v7.0.101
+[dotnet-sdk]: https://github.com/dotnet/sdk/releases/tag/v7.0.102

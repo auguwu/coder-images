@@ -21,8 +21,8 @@
 
 
 variable "base_image" {
-  description = "If `custom_image` is set to a string that is a valid Docker image, this will be skipped. If not, this will use a base image that is from Noel's Coder images (https://github.com/auguwu/coder-images) from this list"
-  default     = ""
+  description = "The base image from Noel's Coder images that should be used."
+  default     = "base"
   type        = string
 
   validation {
@@ -32,31 +32,31 @@ variable "base_image" {
 }
 
 variable "custom_image" {
-  description = "The Docker image to use if `base_image` is an empty string."
+  description = "The image to use if the base image variable is empty"
   default     = ""
   type        = string
 }
 
 variable "home_dir" {
-  description = "The home directory to persist"
+  description = "What directory should be persisted in the Docker volume?"
   default     = "/home/noel"
   type        = string
 }
 
 variable "git_repository" {
-  description = "The Git repository to clone when the pod or container is initializing"
+  description = "Repository URL that is cloned right after the workspace is created"
   default     = ""
   type        = string
 }
 
 variable "install_codeserver" {
-  description = "If the startup script should install Code Server"
+  description = "If the workspace should include code-server to work on this workspace with Visual Studio Code"
   default     = false
   type        = bool
 }
 
 variable "dotfiles_repo" {
-  description = "The repository URL to your dotfiles configuration"
+  description = "Repository URL of the dotfiles to initialize"
   default     = ""
   type        = string
 }
