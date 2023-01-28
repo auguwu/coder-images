@@ -35,7 +35,8 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt update && \
   apt upgrade -y && \
   apt install -y sudo git curl neofetch git-lfs ca-certificates \
-                unzip zip bash vim nano python3 python3-pip libarchive-tools gnupg lsb-release
+                unzip zip bash vim nano python3 python3-pip libarchive-tools gnupg lsb-release pkg-config \
+                libssl-dev
 
 # Setup the user environment
 RUN groupadd -g ${USER_GID} ${USERNAME} && \
@@ -58,7 +59,7 @@ RUN usermod -aG docker ${USERNAME}
 
 # stuff here
 ENV GITHUB_CLI_VERSION="2.21.2"
-ENV CODER_CLI_VERSION="0.15.1"
+ENV CODER_CLI_VERSION="0.15.3"
 ENV TERRAFORM_VERSION="1.3.7"
 ENV KUBECTL_VERSION="1.26.1"
 ENV HELM_VERSION="3.11.0"
