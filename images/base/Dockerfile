@@ -35,7 +35,8 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt update && \
   apt upgrade -y && \
   apt install -y sudo git curl neofetch git-lfs ca-certificates \
-                unzip zip bash vim nano python3 python3-pip libarchive-tools gnupg lsb-release
+                unzip zip bash vim nano python3 python3-pip libarchive-tools gnupg lsb-release pkg-config \
+                libssl-dev
 
 # Setup the user environment
 RUN groupadd -g ${USER_GID} ${USERNAME} && \

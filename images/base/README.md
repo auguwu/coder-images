@@ -1,5 +1,5 @@
 # ghcr.io/auguwu/coder-images/base:latest
-This image is the main base for all of the images in this repository. It uses the **Arch Linux** distribution since I am most comfortable in that distribution, I might provide Debian and Ubuntu variants, if other people use this!
+This image is the main base for all of the images in this repository.
 
 ## Bundled Software
 | Name        | Description                                                                       | Version               |
