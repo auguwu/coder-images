@@ -57,8 +57,8 @@ RUN apt update && apt install -y docker-ce docker-ce-cli containerd.io docker-co
 RUN usermod -aG docker ${USERNAME}
 
 # stuff here
-ENV GITHUB_CLI_VERSION="2.21.2"
-ENV CODER_CLI_VERSION="0.15.1"
+ENV GITHUB_CLI_VERSION="2.22.1"
+ENV CODER_CLI_VERSION="0.15.3"
 ENV TERRAFORM_VERSION="1.3.7"
 ENV KUBECTL_VERSION="1.26.1"
 ENV HELM_VERSION="3.11.0"
@@ -98,6 +98,7 @@ USER ${USERNAME}
 WORKDIR /home/${USERNAME}
 
 ENV PATH=$PATH:/opt/coder/cli:/opt/hashicorp/terraform:/opt/helm:/opt/github/cli/bin:/home/${USERNAME}/.local/bin
+ENV LANG=en-GB.UTF-8
 
 # Add common Helm repositores
 RUN helm repo add bitnami https://charts.bitnami.com/bitnami

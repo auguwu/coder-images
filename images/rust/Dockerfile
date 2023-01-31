@@ -28,7 +28,7 @@ USER root
 
 # rust version to install
 ENV RUSTUP_VERSION="1.25.1"
-ENV RUST_VERSION="1.65.0"
+ENV RUST_VERSION="1.67.0"
 
 # Install the Rust (minimal) toolchain
 RUN apt install -y --no-install-recommends ca-certificates gcc libc6-dev
@@ -54,3 +54,4 @@ RUN set -eux; \
   chmod +x /tmp/rustup-init && /tmp/rustup-init -y --no-modify-path --profile minimal --default-toolchain ${RUST_VERSION} --default-host=${ARCH_TRIPLE};
 
 ENV PATH="$PATH:/home/${USERNAME}/.cargo/bin"
+RUN rustup component add cargo rustfmt
