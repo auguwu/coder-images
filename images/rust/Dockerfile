@@ -54,4 +54,4 @@ RUN set -eux; \
   chmod +x /tmp/rustup-init && /tmp/rustup-init -y --no-modify-path --profile minimal --default-toolchain ${RUST_VERSION} --default-host=${ARCH_TRIPLE};
 
 ENV PATH="$PATH:/home/${USERNAME}/.cargo/bin"
-RUN rustup component add cargo rustfmt
+RUN rustup component add clippy rustfmt
