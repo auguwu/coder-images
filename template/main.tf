@@ -63,7 +63,14 @@ resource "coder_agent" "main" {
   ${var.install_codeserver == true ? "code-server --auth none --port 3621" : ""}
 
   # Clone the given repository if needed
-  ${var.git_repository != "" ? "git clone ${var.git_repository} ${var.home_dir}/workspace" : ""}
+  ${var.git_repository != "" ? "git clone ${var.git_repository} ${var.workspace_dir}" : ""}
+
+  if ! [ -d "${var.workspace_dir}" ]; then
+    mkdir ${var.workspace_dir}
+  fi
+
+  # initialize dotfiles
+  ${var.dotfiles_repo != "" ? "coder dotfiles -y ${var.dotfiles_repo}" : ""}
   EOL
 }
 
@@ -72,7 +79,7 @@ resource "coder_app" "code-server" {
   agent_id     = coder_agent.main.id
   slug         = "code-server"
   display_name = "Visual Studio Code"
-  url          = "http://localhost:3621/?folder=${var.git_repository != "" ? "${var.home_dir}/workspace" : var.home_dir}"
+  url          = "http://localhost:3621/?folder=${var.workspace_dir}"
   icon         = "/icon/code.svg"
 
   healthcheck {
@@ -82,7 +89,7 @@ resource "coder_app" "code-server" {
   }
 }
 
-resource "docker_volume" "coder-workspace" {
+resource "docker_volume" "coder_workspace" {
   name = "${data.coder_workspace.me.name}-coder-workspace"
 }
 
@@ -91,7 +98,6 @@ resource "docker_network" "private_network" {
 }
 
 resource "docker_container" "dind" {
-  count      = var.enable_dind == true ? 1 : 0
   image      = "docker:dind"
   name       = "${data.coder_workspace.me.name}-dind"
   entrypoint = ["dockerd", "-H", "tcp://0.0.0.0:2375"]
@@ -104,24 +110,20 @@ resource "docker_container" "dind" {
 
 resource "docker_container" "workspace" {
   count = data.coder_workspace.me.start_count
-  env = var.enable_dind == true ? [
+  env = [
     "CODER_AGENT_TOKEN=${coder_agent.main.token}",
     "CODER_ACCESS_URL=https://coder.floofy.dev",
-    "DOCKER_HOST=${docker_container.dind.name}:2375"
-    ] : [
-    "CODER_AGENT_TOKEN=${coder_agent.main.token}",
-    "CODER_ACCESS_URL=https://coder.floofy.dev"
+    "DOCKER_HOST=tcp://${data.coder_workspace.me.name}-dind:2375"
   ]
 
   volumes {
-    container_path = "/home/noel"
-    host_path      = docker_volume.coder-workspace.mountpoint
+    container_path = var.home_dir
+    host_path      = docker_volume.coder_workspace.mountpoint
   }
 
   command = ["/bin/bash", "-c", coder_agent.main.init_script]
   image   = var.custom_image != "" ? var.custom_image : "ghcr.io/auguwu/coder-images/${var.base_image}:latest"
   name    = data.coder_workspace.me.name
-
 
   networks_advanced {
     name = docker_network.private_network.name

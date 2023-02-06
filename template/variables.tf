@@ -25,6 +25,12 @@ variable "enable_dind" {
   type        = bool
 }
 
+variable "workspace_dir" {
+  description = "The directory of where your workspace should be cloned."
+  default     = "/home/noel/workspace"
+  type        = string
+}
+
 variable "base_image" {
   description = "The base image from Noel's Coder images that should be used."
   default     = "base"
