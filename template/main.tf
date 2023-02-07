@@ -102,6 +102,7 @@ resource "docker_container" "dind" {
   name       = "${data.coder_workspace.me.name}-dind"
   entrypoint = ["dockerd", "-H", "tcp://0.0.0.0:2375"]
   privileged = true
+  count      = data.coder_workspace.me.start_count
 
   networks_advanced {
     name = docker_network.private_network.name
