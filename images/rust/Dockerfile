@@ -28,7 +28,7 @@ USER root
 
 # rust version to install
 ENV RUSTUP_VERSION="1.25.1"
-ENV RUST_VERSION="1.67.0"
+ENV RUST_VERSION="1.67.1"
 
 # Install the Rust (minimal) toolchain
 RUN apt install -y --no-install-recommends ca-certificates gcc libc6-dev

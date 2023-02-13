@@ -94,8 +94,7 @@ resource "docker_volume" "coder_workspace" {
 }
 
 resource "docker_network" "private_network" {
-  name  = "${data.coder_workspace.me.name}-network"
-  count = data.coder_workspace.me.start_count
+  name = "${data.coder_workspace.me.name}-network"
 }
 
 resource "docker_container" "dind" {

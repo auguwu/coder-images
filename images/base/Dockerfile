@@ -58,11 +58,11 @@ RUN apt update && apt install -y docker-ce docker-ce-cli containerd.io docker-co
 RUN usermod -aG docker ${USERNAME}
 
 # stuff here
-ENV GITHUB_CLI_VERSION="2.22.1"
-ENV CODER_CLI_VERSION="0.16.0"
-ENV TERRAFORM_VERSION="1.3.7"
+ENV GITHUB_CLI_VERSION="2.23.0"
+ENV CODER_CLI_VERSION="0.17.1"
+ENV TERRAFORM_VERSION="1.3.8"
 ENV KUBECTL_VERSION="1.26.1"
-ENV HELM_VERSION="3.11.0"
+ENV HELM_VERSION="3.11.1"
 
 # Get current architecture and download software here
 # also this looks like shit, i know!
