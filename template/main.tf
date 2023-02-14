@@ -58,6 +58,11 @@ resource "coder_agent" "main" {
   # Fix folder permissions since root owns /home/noel for some reason???
   sudo chown -R noel:noel /home/noel
 
+  # Run Docker in the background
+  if command -v dockerd &> /dev/null; then
+    sudo dockerd &
+  fi
+
   # Install code-server if enabled
   ${var.install_codeserver == true ? "curl -fsSL https://code-server.dev/install.sh | sh" : ""}
   ${var.install_codeserver == true ? "code-server --auth none --port 3621" : ""}
@@ -93,28 +98,11 @@ resource "docker_volume" "coder_workspace" {
   name = "${data.coder_workspace.me.name}-coder-workspace"
 }
 
-resource "docker_network" "private_network" {
-  name = "${data.coder_workspace.me.name}-network"
-}
-
-resource "docker_container" "dind" {
-  image      = "docker:dind"
-  name       = "${data.coder_workspace.me.name}-dind"
-  entrypoint = ["dockerd", "-H", "tcp://0.0.0.0:2375"]
-  privileged = true
-  count      = data.coder_workspace.me.start_count
-
-  networks_advanced {
-    name = docker_network.private_network.name
-  }
-}
-
 resource "docker_container" "workspace" {
   count = data.coder_workspace.me.start_count
   env = [
     "CODER_AGENT_TOKEN=${coder_agent.main.token}",
-    "CODER_ACCESS_URL=https://coder.floofy.dev",
-    "DOCKER_HOST=tcp://${data.coder_workspace.me.name}-dind:2375"
+    "CODER_ACCESS_URL=https://coder.floofy.dev"
   ]
 
   volumes {
@@ -123,10 +111,7 @@ resource "docker_container" "workspace" {
   }
 
   command = ["/bin/bash", "-c", coder_agent.main.init_script]
+  runtime = "sysbox-runc"
   image   = var.custom_image != "" ? var.custom_image : "ghcr.io/auguwu/coder-images/${var.base_image}:latest"
   name    = data.coder_workspace.me.name
-
-  networks_advanced {
-    name = docker_network.private_network.name
-  }
 }

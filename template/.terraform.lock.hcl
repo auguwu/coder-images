@@ -19,6 +19,21 @@ provider "registry.terraform.io/coder/coder" {
     "h1:rflkrtz0TpjoU4kC1YFgZSgsTJzZrc+97WeUdBYqsU4=",
     "h1:uKg2Ii5QRquubz97fzaULwlVawHL5b4zNPfOUFHABys=",
     "h1:z7EJbTRYJmBw1CJdocfR5TqPZoqLepsiKu0VqwerEQw=",
+    "zh:03a1323aa1d3df4c47d58f011d8baa3a0aa9af313f40050fdbbae551985de8bb",
+    "zh:07b0116ff163f9885abdc6377efda57f98fb4ec70b2289d8e94269074d664e6e",
+    "zh:335ac94e8cea315e0460f9c7b2d99c30fd26270af51ba4a7fb702ffcc1593d0b",
+    "zh:39a51874079c5c5afe1c7597a8945d36b7e8c568530c8dc52c38cc9bf34cdc4b",
+    "zh:4df2c6850d5e67d3dce395f49873dc163ea14e9722c7c2008057177020d305e6",
+    "zh:4fe09b59b11b423abd6b8516eb287deb1c2a08289c421a9334762f1b11a8e032",
+    "zh:7d7b41bb2a97c0adbb54cd9e23b5a2d7e1c28b92314bc33b454972237cb93a46",
+    "zh:8b796ba68e486e4c37ee224f17235ca5183bcf97f1d45bd89153da5406d006b3",
+    "zh:aad5cd882ffc7af7df00af35789d7895f12c0fc4f9dab5628b5dfc1c588c518f",
+    "zh:c1a2800b297038af32cf93b07eaa171295b3cd847fbab5386c337fb13b76b0f0",
+    "zh:ce3a35f36a440006e94b7a9a2f26d72ac59ccc32fbd4625845bc870dcddd79a2",
+    "zh:d57d001f71fe6b273025c0c4e3fd71fb83f83f4068d988e5f1c45ace5652905d",
+    "zh:e6a2ea234d5789f0971cb43c36275537657ae066aa78e72ecb886ef6e14fbeef",
+    "zh:f569b65999264a9416862bca5cd2a6177d94ccb0424f3a4ef424428912b9cb3c",
+    "zh:fa6c0c3a5a15e42609e83ece9723b8f7bdc5d4064a344494ff62f49377d0de58",
   ]
 }
 

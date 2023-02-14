@@ -19,12 +19,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-variable "enable_dind" {
-  description = "If the template should initialize a sidecar container for Docker in Docker usage. Don't enable this if the host can't run privileged containers."
-  default     = false
-  type        = bool
-}
-
 variable "workspace_dir" {
   description = "The directory of where your workspace should be cloned."
   default     = "/home/noel/workspace"
