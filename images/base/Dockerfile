@@ -19,7 +19,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-FROM ubuntu:jammy
+FROM ubuntu:22.10
 
 # Set the shell to Bash
 SHELL ["/bin/bash", "-c"]
@@ -36,7 +36,7 @@ RUN apt update && \
   apt upgrade -y && \
   apt install -y sudo git curl neofetch git-lfs ca-certificates \
                 unzip zip bash vim nano python3 python3-pip libarchive-tools gnupg lsb-release pkg-config \
-                libssl-dev
+                libssl-dev tree htop
 
 # Setup the user environment
 RUN groupadd -g ${USER_GID} ${USERNAME} && \
@@ -58,11 +58,13 @@ RUN apt update && apt install -y docker-ce docker-ce-cli containerd.io docker-co
 RUN usermod -aG docker ${USERNAME}
 
 # stuff here
-ENV GITHUB_CLI_VERSION="2.23.0"
-ENV CODER_CLI_VERSION="0.17.1"
-ENV TERRAFORM_VERSION="1.3.8"
-ENV KUBECTL_VERSION="1.26.1"
-ENV HELM_VERSION="3.11.1"
+ENV BAZEL_BUILDTOOLS_VERSION="6.0.1"
+ENV GITHUB_CLI_VERSION="2.24.3"
+ENV CODER_CLI_VERSION="0.19.2"
+ENV TERRAFORM_VERSION="1.4.0"
+ENV BAZELISK_VERSION="1.16.0"
+ENV KUBECTL_VERSION="1.26.2"
+ENV HELM_VERSION="3.11.2"
 
 # Get current architecture and download software here
 # also this looks like shit, i know!
@@ -70,16 +72,24 @@ RUN set -eux; \
   arch="$(dpkg --print-architecture)"; \
   case "${arch}" in \
     aarch64|arm64) \
+      BAZEL_UNUSED_DEPS_DOWNLOAD_URL="https://github.com/bazelbuild/buildtools/releases/download/${BAZEL_BUILDTOOLS_VERSION}/unused_deps-linux-arm64"; \
+      BAZEL_BUILDIFIER_DOWNLOAD_URL="https://github.com/bazelbuild/buildtools/releases/download/${BAZEL_BUILDTOOLS_VERSION}/buildifier-linux-arm64"; \
+      BAZEL_BUILDOZER_DOWNLOAD_URL="https://github.com/bazelbuild/buildtools/releases/download/${BAZEL_BUILDTOOLS_VERSION}/buildifier-linux-arm64"; \
       GITHUB_CLI_DOWNLOAD_URL="https://github.com/cli/cli/releases/download/v${GITHUB_CLI_VERSION}/gh_${GITHUB_CLI_VERSION}_linux_arm64.tar.gz"; \
       TERRAFORM_DOWNLOAD_URL="https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_arm64.zip"; \
-      CODER_DOWNLOAD_URL="https://github.com/coder/coder/releases/download/v${CODER_CLI_VERSION}/coder_${CODER_CLI_VERSION}_linux_arm64.tar.gz"; \
+      BAZELISK_DOWNLOAD_URL="https://github.com/bazelbuild/bazelisk/releases/download/v${BAZELISK_VERSION}/bazelisk-linux-arm64"; \
       KUBECTL_DOWNLOAD_URL="https://dl.k8s.io/release/v${KUBECTL_VERSION}/bin/linux/arm64/kubectl"; \
+      CODER_DOWNLOAD_URL="https://github.com/coder/coder/releases/download/v${CODER_CLI_VERSION}/coder_${CODER_CLI_VERSION}_linux_arm64.tar.gz"; \
       HELM_DOWNLOAD_URL="https://get.helm.sh/helm-v${HELM_VERSION}-linux-arm64.tar.gz"; \
       ;; \
     amd64|x86_64) \
+      BAZEL_UNUSED_DEPS_DOWNLOAD_URL="https://github.com/bazelbuild/buildtools/releases/download/${BAZEL_BUILDTOOLS_VERSION}/unused_deps-linux-amd64"; \
+      BAZEL_BUILDIFIER_DOWNLOAD_URL="https://github.com/bazelbuild/buildtools/releases/download/${BAZEL_BUILDTOOLS_VERSION}/buildifier-linux-amd64"; \
+      BAZEL_BUILDOZER_DOWNLOAD_URL="https://github.com/bazelbuild/buildtools/releases/download/${BAZEL_BUILDTOOLS_VERSION}/buildifier-linux-amd64"; \
       GITHUB_CLI_DOWNLOAD_URL="https://github.com/cli/cli/releases/download/v${GITHUB_CLI_VERSION}/gh_${GITHUB_CLI_VERSION}_linux_amd64.tar.gz" \
-      CODER_DOWNLOAD_URL="https://github.com/coder/coder/releases/download/v${CODER_CLI_VERSION}/coder_${CODER_CLI_VERSION}_linux_amd64.tar.gz" \
       TERRAFORM_DOWNLOAD_URL="https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" \
+      BAZELISK_DOWNLOAD_URL="https://github.com/bazelbuild/bazelisk/releases/download/v${BAZELISK_VERSION}/bazelisk-linux-amd64"; \
+      CODER_DOWNLOAD_URL="https://github.com/coder/coder/releases/download/v${CODER_CLI_VERSION}/coder_${CODER_CLI_VERSION}_linux_amd64.tar.gz" \
       KUBECTL_DOWNLOAD_URL="https://dl.k8s.io/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl"; \
       HELM_DOWNLOAD_URL="https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz"; \
       ;; \
@@ -89,17 +99,20 @@ RUN set -eux; \
   curl -L ${CODER_DOWNLOAD_URL}      | tar xfz - -C /opt/coder/cli --strip-components=1; \
   curl -L ${GITHUB_CLI_DOWNLOAD_URL} | tar xfz - -C /opt/github/cli --strip-components=1; \
   curl -L ${HELM_DOWNLOAD_URL}       | tar xfz - -C /opt/helm --strip-components=1; \
-  curl -L ${TERRAFORM_DOWNLOAD_URL}  | bsdtar xfz - --strip-components=1 -C /opt/hashicorp/terraform;
+  curl -L ${TERRAFORM_DOWNLOAD_URL}  | bsdtar xfz - --strip-components=1 -C /opt/hashicorp/terraform; \
+  curl -fsSL -o /usr/local/bin/bazel             ${BAZELISK_DOWNLOAD_URL}; \
+  curl -fsSL -o /usr/local/bin/bazel-buildifier  ${BAZEL_BUILDIFIER_DOWNLOAD_URL}; \
+  curl -fsSL -o /usr/local/bin/bazel-buildozer   ${BAZEL_BUILDOZER_DOWNLOAD_URL}; \
+  curl -fsSL -o /usr/local/bin/bazel-unused-deps ${BAZEL_UNUSED_DEPS_DOWNLOAD_URL};
 
-# Let the user execute `kubectl`
-RUN chmod +x /usr/local/bin/kubectl
+# Let the user execute `kubectl` and `bazel` (which is just Bazelisk so we don't have to have a Java environment in this image)
+RUN chmod +x /usr/local/bin/kubectl /usr/local/bin/bazel /usr/local/bin/bazel-*
 
 # Set back to our user!
 USER ${USERNAME}
 WORKDIR /home/${USERNAME}
 
 ENV PATH=$PATH:/opt/coder/cli:/opt/hashicorp/terraform:/opt/helm:/opt/github/cli/bin:/home/${USERNAME}/.local/bin
-ENV LANG=en-GB.UTF-8
 
 # Add common Helm repositores
 RUN helm repo add bitnami https://charts.bitnami.com/bitnami

@@ -6,4 +6,4 @@ This image extends the [base image](https://github.com/auguwu/coder-images/pkgs/
 | ---- | ------------------------------------------------------------- | --------------- |
 | Rust | Empowering everyone to build reliable and efficient software. | [v1.67.1][rust] |
 
-[rust]: https://github.com/rust-lang/rust/releases/tag/1.67.1
+[rust]: https://github.com/rust-lang/rust/releases/tag/1.68.0

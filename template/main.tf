@@ -23,7 +23,7 @@ terraform {
   required_providers {
     coder = {
       source  = "coder/coder"
-      version = "0.6.12"
+      version = "0.6.17"
     }
 
     docker = {
@@ -57,6 +57,11 @@ resource "coder_agent" "main" {
 
   # Fix folder permissions since root owns /home/noel for some reason???
   sudo chown -R noel:noel /home/noel
+
+  # Run Docker in the background
+  if command -v dockerd &> /dev/null; then
+    sudo dockerd &
+  fi
 
   # Install code-server if enabled
   ${var.install_codeserver == true ? "curl -fsSL https://code-server.dev/install.sh | sh" : ""}
@@ -121,6 +126,7 @@ resource "docker_container" "workspace" {
   }
 
   command = ["/bin/bash", "-c", coder_agent.main.init_script]
+  runtime = "sysbox-runc"
   image   = var.custom_image != "" ? var.custom_image : "ghcr.io/auguwu/coder-images/${var.base_image}:latest"
   name    = data.coder_workspace.me.name
 }
