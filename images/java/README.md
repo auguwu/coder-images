@@ -5,9 +5,9 @@ This image extends the [base image](https://github.com/auguwu/coder-images/pkgs/
 | Name   | Description                                         | Version                      |
 | ------ | --------------------------------------------------- | -----------------------------|
 | JDK    | The Java development kit.                           | [19.0.2+7][temurin-release] |
-| Gradle | Adaptable, fast automation for all                  | [v8.0.1][gradle-release]       |
-| Maven  | Software project management and comprehension tool. | [v3.8.7][maven-release]      |
+| Gradle | Adaptable, fast automation for all                  | [v8.0.2][gradle-release]       |
+| Maven  | Software project management and comprehension tool. | [v3.9.0][maven-release]      |
 
 [temurin-release]: https://github.com/adoptium/temurin19-binaries/releases/tag/jdk-19.0.2%2B7
-[gradle-release]:  https://github.com/gradle/gradle/releases/tag/v8.0.1
+[gradle-release]:  https://github.com/gradle/gradle/releases/tag/v8.0.2
 [maven-release]:   https://github.com/apache/maven/releases/tag/maven-3.9.0
