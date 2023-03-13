@@ -48,11 +48,11 @@ resource "coder_agent" "main" {
   startup_script = <<-EOL
   #!/bin/bash
   if [ ! -f ~/.profile ]; then
-    cp /etc/skel/.profile $HOME
+    cp /etc/skel/.profile $HOME/.profile
   fi
 
   if [ ! -f ~/.bashrc ]; then
-    cp /etc/skel/.bashrc $HOME
+    cp /etc/skel/.bashrc $HOME/.bashrc
   fi
 
   # Fix folder permissions since root owns /home/noel for some reason???
@@ -62,8 +62,23 @@ resource "coder_agent" "main" {
   ${var.install_codeserver == true ? "curl -fsSL https://code-server.dev/install.sh | sh" : ""}
   ${var.install_codeserver == true ? "code-server --auth none --port 3621" : ""}
 
+  if which dockerd > /dev/null; then
+    sudo dockerd &
+  fi
+
+  # I don't know why this happens but, the base Rust image loses all information, so we
+  # will re-run the rustup-init script, which is still present.
+  if [ -x /tmp/rustup-init ]; then
+    /tmp/rustup-init -y --no-modify-path --profile minimal --default-toolchain nightly --default-host=x86_64-unknown-linux-gnu
+    source $HOME/.cargo/env
+
+    rustup component add clippy rustfmt
+  fi
+
   # Clone the given repository if needed
-  ${var.git_repository != "" ? "git clone ${var.git_repository} ${var.workspace_dir}" : ""}
+  if ! [ -d "${var.workspace_dir}" ]; then
+    ${var.git_repository != "" ? "git clone ${var.git_repository} ${var.workspace_dir}" : ""}
+  fi
 
   if ! [ -d "${var.workspace_dir}" ]; then
     mkdir ${var.workspace_dir}
@@ -93,28 +108,11 @@ resource "docker_volume" "coder_workspace" {
   name = "${data.coder_workspace.me.name}-coder-workspace"
 }
 
-resource "docker_network" "private_network" {
-  name = "${data.coder_workspace.me.name}-network"
-}
-
-resource "docker_container" "dind" {
-  image      = "docker:dind"
-  name       = "${data.coder_workspace.me.name}-dind"
-  entrypoint = ["dockerd", "-H", "tcp://0.0.0.0:2375"]
-  privileged = true
-  count      = data.coder_workspace.me.start_count
-
-  networks_advanced {
-    name = docker_network.private_network.name
-  }
-}
-
 resource "docker_container" "workspace" {
   count = data.coder_workspace.me.start_count
   env = [
     "CODER_AGENT_TOKEN=${coder_agent.main.token}",
-    "CODER_ACCESS_URL=https://coder.floofy.dev",
-    "DOCKER_HOST=tcp://${data.coder_workspace.me.name}-dind:2375"
+    "CODER_ACCESS_URL=https://coder.floofy.dev"
   ]
 
   volumes {
@@ -125,8 +123,4 @@ resource "docker_container" "workspace" {
   command = ["/bin/bash", "-c", coder_agent.main.init_script]
   image   = var.custom_image != "" ? var.custom_image : "ghcr.io/auguwu/coder-images/${var.base_image}:latest"
   name    = data.coder_workspace.me.name
-
-  networks_advanced {
-    name = docker_network.private_network.name
-  }
 }
