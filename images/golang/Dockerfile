@@ -28,8 +28,8 @@ USER root
 
 # Put versions in environment variables
 ENV GOLANG_VERSION="1.20.2"
-ENV GORELEASER_VERSION="1.16.1"
-ENV GOLANGCI_VERSION="1.51.2"
+ENV GORELEASER_VERSION="1.16.2"
+ENV GOLANGCI_VERSION="1.52.2"
 
 # Install packages here.
 RUN set -eux; \
