@@ -37,6 +37,10 @@ provider "docker" {
   host = "unix:///var/run/docker.sock"
 }
 
+data "coder_git_auth" "github" {
+  id = "noel-git"
+}
+
 data "coder_workspace" "me" {
 }
 
@@ -44,6 +48,37 @@ resource "coder_agent" "main" {
   arch = "amd64"
   dir  = var.home_dir
   os   = "linux"
+  metadata {
+    display_name = "Processes"
+    key          = "proc_count"
+    script       = "ps aux | wc -l"
+    interval     = 1
+    timeout      = 1
+  }
+
+  # metadata {
+  #   display_name = "Docker Containers"
+  #   key = "docker_containers"
+  #   script = ""
+  #   interval = 1
+  #   timeout = 1
+  # }
+
+  metadata {
+    display_name = "Load Average"
+    key          = "load"
+    script       = "awk '{print $1}' /proc/loadavg"
+    interval     = 1
+    timeout      = 1
+  }
+
+  metadata {
+    display_name = "Disk Usage"
+    key          = "disk"
+    script       = "df -h | awk '$6 ~ /^\\/$/ { print $5 }'"
+    interval     = 1
+    timeout      = 1
+  }
 
   startup_script = <<-EOL
   #!/bin/bash
@@ -66,10 +101,6 @@ resource "coder_agent" "main" {
   # Install code-server if enabled
   ${var.install_codeserver == true ? "curl -fsSL https://code-server.dev/install.sh | sh" : ""}
   ${var.install_codeserver == true ? "code-server --auth none --port 3621" : ""}
-
-  if which dockerd > /dev/null; then
-    sudo dockerd &
-  fi
 
   # I don't know why this happens but, the base Rust image loses all information, so we
   # will re-run the rustup-init script, which is still present.
