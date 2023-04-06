@@ -13,12 +13,12 @@ This image is the main base for all of the images in this repository.
 | `bazel`          | a fast, scalable, multi-language and extensible build system                      | [v6.1.1][bazel]            |
 | `helm`           | The Kubernetes Package Manager                                                    | [v3.11.2][helm]            |
 
-[bazel-buildtools]: https://github.com/bazelbuild/buildtools/releases/tag/6.0.1
-[github-cli]:       https://github.com/cli/cli/releases/tag/v2.25.1
-[terraform]:        https://github.com/hashicorp/terraform/releases/tag/v1.4.2
+[bazel-buildtools]: https://github.com/bazelbuild/buildtools/releases/tag/6.1.0
+[github-cli]:       https://github.com/cli/cli/releases/tag/v2.26.1
+[terraform]:        https://github.com/hashicorp/terraform/releases/tag/v1.4.4
 [bazelisk]:         https://github.com/bazelbuild/bazelisk/releases/tag/v1.16.0
 [kubectl]:          https://github.com/kubernetes/kubernetes/releases/tag/v1.26.3
-[coder]:            https://github.com/coder/coder/releases/tag/v0.20.1
+[coder]:            https://github.com/coder/coder/releases/tag/v0.21.3
 [bazel]:            https://github.com/bazelbuild/bazel/releases/tag/6.1.1
 [helm]:             https://github.com/helm/helm/releases/tag/v3.11.2
 

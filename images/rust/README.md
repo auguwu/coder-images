@@ -4,6 +4,6 @@ This image extends the [base image](https://github.com/auguwu/coder-images/pkgs/
 ## Bundled Software
 | Name | Description                                                   | Version         |
 | ---- | ------------------------------------------------------------- | --------------- |
-| Rust | Empowering everyone to build reliable and efficient software. | [v1.68.0][rust] |
+| Rust | Empowering everyone to build reliable and efficient software. | [v1.68.2][rust] |
 
-[rust]: https://github.com/rust-lang/rust/releases/tag/1.68.0
+[rust]: https://github.com/rust-lang/rust/releases/tag/1.68.2
