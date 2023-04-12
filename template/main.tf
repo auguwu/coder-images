@@ -82,6 +82,9 @@ resource "coder_agent" "main" {
 
   startup_script = <<-EOL
   #!/bin/bash
+  # Fix folder permissions since root owns /home/noel for some reason???
+  sudo chown -R noel:noel /home/noel
+
   if [ ! -f ~/.profile ]; then
     cp /etc/skel/.profile $HOME/.profile
   fi
@@ -89,9 +92,6 @@ resource "coder_agent" "main" {
   if [ ! -f ~/.bashrc ]; then
     cp /etc/skel/.bashrc $HOME/.bashrc
   fi
-
-  # Fix folder permissions since root owns /home/noel for some reason???
-  sudo chown -R noel:noel /home/noel
 
   # Run Docker in the background
   if command -v dockerd &> /dev/null; then
@@ -118,6 +118,25 @@ resource "coder_agent" "main" {
 
   if ! [ -d "${var.workspace_dir}" ]; then
     mkdir ${var.workspace_dir}
+  fi
+
+  # if ${var.workspace_dir}/.coder exists, then we will run the pre-init scripts
+  # and then the Docker Compose project (if any).
+  if [ -d "${var.workspace_dir}/.coder" ]; then
+    # Run any pre-init scripts in .coder/scripts/pre-init
+    if [ -d "${var.workspace_dir}/.coder/scripts/pre-init" ]; then
+      # run pre-init scripts
+    fi
+
+    # Run the docker compose project
+    if [ -f "${var.workspace_dir}/.coder/docker-compose.yml" ]; then
+      # run it
+    fi
+
+    # run post-init scripts
+    if [ -d "${var.workspace_dir}/.coder/scripts/post-init" ]; then
+      # run post-init scripts
+    fi
   fi
 
   # initialize dotfiles

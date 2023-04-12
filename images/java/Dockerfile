@@ -27,7 +27,7 @@ ENV USERNAME=noel
 USER root
 
 # Set version environment variables
-ENV GRADLE_VERSION="8.0.2"
+ENV GRADLE_VERSION="8.1"
 ENV MAVEN_VERSION="3.9.1"
 
 # install required things
@@ -37,7 +37,7 @@ RUN DEBIAN_FRONTEND="noninteractive" apt install -y wget libarchive-tools
 RUN wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | sudo apt-key add -
 RUN echo "deb https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" | sudo tee /etc/apt/sources.list.d/adoptium.list
 RUN DEBIAN_FRONTEND="noninteractive" apt update && \
-  DEBIAN_FRONTEND="noninteractive" apt install -y temurin-19-jdk
+  DEBIAN_FRONTEND="noninteractive" apt install -y temurin-20-jdk
 
 # Install packages!
 RUN GRADLE_DOWNLOAD_URL="https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-all.zip"; \
