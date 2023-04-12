@@ -112,7 +112,7 @@ resource "coder_agent" "main" {
   fi
 
   # Clone the given repository if needed
-  if ! [ -d "${var.workspace_dir}" ]; then
+  if ! [ -d "${var.workspace_dir} ]; then
     ${var.git_repository != "" ? "git clone ${var.git_repository} ${var.workspace_dir}" : ""}
   fi
 
@@ -125,17 +125,35 @@ resource "coder_agent" "main" {
   if [ -d "${var.workspace_dir}/.coder" ]; then
     # Run any pre-init scripts in .coder/scripts/pre-init
     if [ -d "${var.workspace_dir}/.coder/scripts/pre-init" ]; then
-      # run pre-init scripts
+      files=$(find "${var.workspace_dir}/.coder/scripts/pre-init" -maxdepth 1 -type f -executable -name '*.sh')
+      for f in "$files"; then
+        (cd "${var.workspace_dir}/.coder" && bash $f) || echo "[coder::preinit] Unable to run pre-init script [$f]"
+      fi
     fi
 
     # Run the docker compose project
     if [ -f "${var.workspace_dir}/.coder/docker-compose.yml" ]; then
-      # run it
+      dc=""
+
+      if command docker-compose &>/dev/null; then
+        dc="docker-compose"
+      fi
+
+      if command docker compose &>/dev/null; then
+        dc="docker compose"
+      fi
+
+      if [ -z "$dc" ]; then
+        $dc -f "${var.workspace_dir}/.coder/docker-compose.yml" up -d
+      fi
     fi
 
     # run post-init scripts
     if [ -d "${var.workspace_dir}/.coder/scripts/post-init" ]; then
-      # run post-init scripts
+      files=$(find "${var.workspace_dir}/.coder/scripts/post-init" -maxdepth 1 -type f -executable -name '*.sh')
+      for f in "$files"; then
+        (cd "${var.workspace_dir}/.coder" && bash $f) || echo "[coder::postinit] Unable to run post-init script [$f]"
+      fi
     fi
   fi
 
