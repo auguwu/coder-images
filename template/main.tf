@@ -112,7 +112,7 @@ resource "coder_agent" "main" {
   fi
 
   # Clone the given repository if needed
-  if ! [ -d "${var.workspace_dir} ]; then
+  if ! [ -d "${var.workspace_dir}" ]; then
     ${var.git_repository != "" ? "git clone ${var.git_repository} ${var.workspace_dir}" : ""}
   fi
 
@@ -126,16 +126,16 @@ resource "coder_agent" "main" {
     # Run any pre-init scripts in .coder/scripts/pre-init
     if [ -d "${var.workspace_dir}/.coder/scripts/pre-init" ]; then
       files=$(find "${var.workspace_dir}/.coder/scripts/pre-init" -maxdepth 1 -type f -executable -name '*.sh')
-      for f in "$files"; then
+      for f in "$files"; do
         (cd "${var.workspace_dir}/.coder" && bash $f) || echo "[coder::preinit] Unable to run pre-init script [$f]"
-      fi
+      done
     fi
 
     # Run the docker compose project
     if [ -f "${var.workspace_dir}/.coder/docker-compose.yml" ]; then
       dc=""
 
-      if command docker-compose &>/dev/null; then
+      if command -v docker-compose &>/dev/null; then
         dc="docker-compose"
       fi
 
@@ -151,9 +151,9 @@ resource "coder_agent" "main" {
     # run post-init scripts
     if [ -d "${var.workspace_dir}/.coder/scripts/post-init" ]; then
       files=$(find "${var.workspace_dir}/.coder/scripts/post-init" -maxdepth 1 -type f -executable -name '*.sh')
-      for f in "$files"; then
+      for f in "$files"; do
         (cd "${var.workspace_dir}/.coder" && bash $f) || echo "[coder::postinit] Unable to run post-init script [$f]"
-      fi
+      done
     fi
   fi
 
@@ -177,6 +177,15 @@ resource "coder_app" "code-server" {
   }
 }
 
+data "docker_registry_image" "image" {
+  name = var.custom_image != "" ? var.custom_image : "ghcr.io/auguwu/coder-images/${var.base_image}:latest"
+}
+
+resource "docker_image" "docker_image" {
+  name          = data.docker_registry_image.image.name
+  pull_triggers = [data.docker_registry_image.image.sha256_digest]
+}
+
 resource "docker_volume" "coder_workspace" {
   name = "${data.coder_workspace.me.name}-coder-workspace"
 }
@@ -195,6 +204,6 @@ resource "docker_container" "workspace" {
 
   command = ["/bin/bash", "-c", coder_agent.main.init_script]
   runtime = "sysbox-runc"
-  image   = var.custom_image != "" ? var.custom_image : "ghcr.io/auguwu/coder-images/${var.base_image}:latest"
+  image   = docker_image.docker_image.image_id
   name    = data.coder_workspace.me.name
 }
