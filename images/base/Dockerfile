@@ -26,8 +26,8 @@ SHELL ["/bin/bash", "-c"]
 
 # For now, this will be `noel` as the user. You can extend this to be whatever you like.
 ENV USERNAME=noel \
-  USER_UID=1000 \
-  USER_GID=1000
+  USER_UID=1001 \
+  USER_GID=1001
 
 ENV DEBIAN_FRONTEND=noninteractive
 
