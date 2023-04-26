@@ -19,7 +19,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-FROM ubuntu:23.04
+FROM ubuntu:22.10
 
 # Set the shell to Bash
 SHELL ["/bin/bash", "-c"]
