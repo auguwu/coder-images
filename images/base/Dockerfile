@@ -19,7 +19,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-FROM ubuntu:22.10
+FROM ubuntu:23.04
 
 # Set the shell to Bash
 SHELL ["/bin/bash", "-c"]
@@ -74,7 +74,7 @@ RUN set -eux; \
     aarch64|arm64) \
       BAZEL_UNUSED_DEPS_DOWNLOAD_URL="https://github.com/bazelbuild/buildtools/releases/download/${BAZEL_BUILDTOOLS_VERSION}/unused_deps-linux-arm64"; \
       BAZEL_BUILDIFIER_DOWNLOAD_URL="https://github.com/bazelbuild/buildtools/releases/download/${BAZEL_BUILDTOOLS_VERSION}/buildifier-linux-arm64"; \
-      BAZEL_BUILDOZER_DOWNLOAD_URL="https://github.com/bazelbuild/buildtools/releases/download/${BAZEL_BUILDTOOLS_VERSION}/buildifier-linux-arm64"; \
+      BAZEL_BUILDOZER_DOWNLOAD_URL="https://github.com/bazelbuild/buildtools/releases/download/${BAZEL_BUILDTOOLS_VERSION}/buildozer-linux-arm64"; \
       GITHUB_CLI_DOWNLOAD_URL="https://github.com/cli/cli/releases/download/v${GITHUB_CLI_VERSION}/gh_${GITHUB_CLI_VERSION}_linux_arm64.tar.gz"; \
       TERRAFORM_DOWNLOAD_URL="https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_arm64.zip"; \
       BAZELISK_DOWNLOAD_URL="https://github.com/bazelbuild/bazelisk/releases/download/v${BAZELISK_VERSION}/bazelisk-linux-arm64"; \
@@ -85,7 +85,7 @@ RUN set -eux; \
     amd64|x86_64) \
       BAZEL_UNUSED_DEPS_DOWNLOAD_URL="https://github.com/bazelbuild/buildtools/releases/download/${BAZEL_BUILDTOOLS_VERSION}/unused_deps-linux-amd64"; \
       BAZEL_BUILDIFIER_DOWNLOAD_URL="https://github.com/bazelbuild/buildtools/releases/download/${BAZEL_BUILDTOOLS_VERSION}/buildifier-linux-amd64"; \
-      BAZEL_BUILDOZER_DOWNLOAD_URL="https://github.com/bazelbuild/buildtools/releases/download/${BAZEL_BUILDTOOLS_VERSION}/buildifier-linux-amd64"; \
+      BAZEL_BUILDOZER_DOWNLOAD_URL="https://github.com/bazelbuild/buildtools/releases/download/${BAZEL_BUILDTOOLS_VERSION}/buildozer-linux-amd64"; \
       GITHUB_CLI_DOWNLOAD_URL="https://github.com/cli/cli/releases/download/v${GITHUB_CLI_VERSION}/gh_${GITHUB_CLI_VERSION}_linux_amd64.tar.gz" \
       TERRAFORM_DOWNLOAD_URL="https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" \
       BAZELISK_DOWNLOAD_URL="https://github.com/bazelbuild/bazelisk/releases/download/v${BAZELISK_VERSION}/bazelisk-linux-amd64"; \
