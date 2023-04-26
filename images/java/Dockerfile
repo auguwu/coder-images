@@ -27,7 +27,7 @@ ENV USERNAME=noel
 USER root
 
 # Set version environment variables
-ENV GRADLE_VERSION="8.1"
+ENV GRADLE_VERSION="8.1.1"
 ENV MAVEN_VERSION="3.9.1"
 
 # install required things
