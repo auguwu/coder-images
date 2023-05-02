@@ -20,7 +20,7 @@
 # SOFTWARE.
 
 # use April 26th image (since Adoptium doesn't support Ubuntu Lunar yet)
-FROM ghcr.io/auguwu/coder-images/base:2023.04.26
+FROM ghcr.io/auguwu/coder-images/base:2023.05.02
 
 ENV USERNAME=noel
 
