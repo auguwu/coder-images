@@ -4,18 +4,18 @@ This image is the main base for all of the images in this repository.
 ## Bundled Software
 | Name             | Description                                                                       | Version                    |
 | ---------------- | --------------------------------------------------------------------------------- | -------------------------- |
-| Bazel Buildtools | A bazel BUILD file formatter and editor                                           | [v6.1.1][bazel-buildtools] |
+| Bazel Buildtools | A bazel BUILD file formatter and editor                                           | [v6.1.2][bazel-buildtools] |
 | GitHub CLI       | GitHub's official command line utility                                            | [v2.28.0][github-cli]      |
 | Coder (OSS)      | Remote development environments on your infrastructure provisioned with Terraform | [v0.23.0][coder]           |
-| Terraform        | Automate Infrastructure on Any Cloud                                              | [v1.4.5][terraform]        |
+| Terraform        | Automate Infrastructure on Any Cloud                                              | [v1.4.6][terraform]        |
 | Bazelisk         | A user-friendly launcher for Bazel.                                               | [v1.16.0][bazelisk]        |
 | `kubectl`        | kubectl controls the Kubernetes cluster manager.                                  | [v1.27.1][kubectl]         |
 | `bazel`          | a fast, scalable, multi-language and extensible build system                      | [v6.1.2][bazel]            |
 | `helm`           | The Kubernetes Package Manager                                                    | [v3.11.3][helm]            |
 
-[bazel-buildtools]: https://github.com/bazelbuild/buildtools/releases/tag/6.1.1
+[bazel-buildtools]: https://github.com/bazelbuild/buildtools/releases/tag/6.1.2
 [github-cli]:       https://github.com/cli/cli/releases/tag/v2.28.0
-[terraform]:        https://github.com/hashicorp/terraform/releases/tag/v1.4.5
+[terraform]:        https://github.com/hashicorp/terraform/releases/tag/v1.4.6
 [bazelisk]:         https://github.com/bazelbuild/bazelisk/releases/tag/v1.16.0
 [kubectl]:          https://github.com/kubernetes/kubernetes/releases/tag/v1.27.1
 [coder]:            https://github.com/coder/coder/releases/tag/v0.23.0

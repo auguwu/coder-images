@@ -19,7 +19,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-FROM ubuntu:22.10
+FROM ubuntu:lunar
 
 # Set the shell to Bash
 SHELL ["/bin/bash", "-c"]
@@ -58,10 +58,10 @@ RUN apt update && apt install -y docker-ce docker-ce-cli containerd.io docker-co
 RUN usermod -aG docker ${USERNAME}
 
 # stuff here
-ENV BAZEL_BUILDTOOLS_VERSION="6.1.1"
+ENV BAZEL_BUILDTOOLS_VERSION="6.1.2"
 ENV GITHUB_CLI_VERSION="2.28.0"
 ENV CODER_CLI_VERSION="0.23.0"
-ENV TERRAFORM_VERSION="1.4.5"
+ENV TERRAFORM_VERSION="1.4.6"
 ENV BAZELISK_VERSION="1.16.0"
 ENV KUBECTL_VERSION="1.27.1"
 ENV HELM_VERSION="3.11.3"

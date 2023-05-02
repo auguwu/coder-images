@@ -48,6 +48,7 @@ resource "coder_agent" "main" {
   arch = "amd64"
   dir  = var.home_dir
   os   = "linux"
+
   metadata {
     display_name = "Processes"
     key          = "proc_count"
@@ -55,14 +56,6 @@ resource "coder_agent" "main" {
     interval     = 1
     timeout      = 1
   }
-
-  # metadata {
-  #   display_name = "Docker Containers"
-  #   key = "docker_containers"
-  #   script = ""
-  #   interval = 1
-  #   timeout = 1
-  # }
 
   metadata {
     display_name = "Load Average"
@@ -78,6 +71,14 @@ resource "coder_agent" "main" {
     script       = "df -h | awk '$6 ~ /^\\/$/ { print $5 }'"
     interval     = 1
     timeout      = 1
+  }
+
+  metadata {
+    display_name = "Docker Containers"
+    script       = "docker ps -aq | wc -l"
+    interval     = 1
+    timeout      = 1
+    key          = "containers"
   }
 
   startup_script = <<-EOL
@@ -191,7 +192,8 @@ resource "docker_volume" "coder_workspace" {
 }
 
 resource "docker_container" "workspace" {
-  count = data.coder_workspace.me.start_count
+  hostname = data.coder_workspace.me.name
+  count    = data.coder_workspace.me.start_count
   env = [
     "CODER_AGENT_TOKEN=${coder_agent.main.token}",
     "CODER_ACCESS_URL=https://coder.floofy.dev"
