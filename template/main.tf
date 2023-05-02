@@ -96,21 +96,23 @@ resource "coder_agent" "main" {
 
   # Run Docker in the background
   if command -v dockerd &> /dev/null; then
-    sudo dockerd &
+    sudo dockerd > /dev/null 2>&1 &
   fi
+
+  # Wait for Docker to start
+  while true; do
+    if curl -s --unix-socket /var/run/docker.sock http/_ping 2>&1 >/dev/null; then
+      echo "Docker Daemon has started!"
+      break
+    fi
+
+    echo "Waiting for Docker daemon to start..."
+    sleep 1
+  done
 
   # Install code-server if enabled
   ${var.install_codeserver == true ? "curl -fsSL https://code-server.dev/install.sh | sh" : ""}
   ${var.install_codeserver == true ? "code-server --auth none --port 3621" : ""}
-
-  # I don't know why this happens but, the base Rust image loses all information, so we
-  # will re-run the rustup-init script, which is still present.
-  if [ -x /tmp/rustup-init ]; then
-    /tmp/rustup-init -y --no-modify-path --profile minimal --default-toolchain nightly --default-host=x86_64-unknown-linux-gnu
-    source $HOME/.cargo/env
-
-    rustup component add clippy rustfmt
-  fi
 
   # Clone the given repository if needed
   if ! [ -d "${var.workspace_dir}" ]; then
@@ -119,6 +121,10 @@ resource "coder_agent" "main" {
 
   if ! [ -d "${var.workspace_dir}" ]; then
     mkdir ${var.workspace_dir}
+  fi
+
+  if [ -n "${var.docker_network_name}" ]; then
+    docker network create "${var.docker_network_name}" --driver=bridge
   fi
 
   # if ${var.workspace_dir}/.coder exists, then we will run the pre-init scripts
@@ -144,7 +150,8 @@ resource "coder_agent" "main" {
         dc="docker compose"
       fi
 
-      if [ -z "$dc" ]; then
+      if [ -n "$dc" ]; then
+        echo "[coder::docker-compose] Using \`$dc\` as the Docker compose command!"
         $dc -f "${var.workspace_dir}/.coder/docker-compose.yml" up -d
       fi
     fi

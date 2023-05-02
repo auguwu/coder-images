@@ -65,3 +65,9 @@ variable "dotfiles_repo" {
   default     = ""
   type        = string
 }
+
+variable "docker_network_name" {
+  description = "Name of the Docker network to use."
+  default     = "fluff"
+  type        = string
+}

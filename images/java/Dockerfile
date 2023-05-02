@@ -19,7 +19,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-FROM ghcr.io/auguwu/coder-images/base
+# use April 26th image (since Adoptium doesn't support Ubuntu Lunar yet)
+FROM ghcr.io/auguwu/coder-images/base:2023.04.26
 
 ENV USERNAME=noel
 
