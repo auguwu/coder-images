@@ -125,7 +125,7 @@ resource "coder_agent" "main" {
 
   if [ -n "${var.docker_network_name}" ]; then
     docker network create "${var.docker_network_name}" --driver=bridge >/dev/null 2>&1
-    echo "Created Docker network \`${var.docker_network_name}\`, you can use it with .coder/docker-compose.yml as a external network! [$id]"
+    echo "Created Docker network \`${var.docker_network_name}\`, you can use it with .coder/docker-compose.yml as a external network!"
   fi
 
   # if ${var.workspace_dir}/.coder exists, then we will run the pre-init scripts
