@@ -112,7 +112,7 @@ resource "coder_agent" "main" {
 
   # Install code-server if enabled
   ${var.install_codeserver == true ? "curl -fsSL https://code-server.dev/install.sh | sh" : ""}
-  ${var.install_codeserver == true ? "code-server --auth none --port 3621" : ""}
+  ${var.install_codeserver == true ? "code-server --auth none --port 3621 > /dev/null 2>&1 &" : ""}
 
   # Clone the given repository if needed
   if ! [ -d "${var.workspace_dir}" ]; then
