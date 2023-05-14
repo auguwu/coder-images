@@ -19,55 +19,110 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-variable "workspace_dir" {
-  description = "The directory of where your workspace should be cloned."
-  default     = "/home/noel/workspace"
-  type        = string
+data "coder_parameter" "workspace" {
+  description = "Workspace directory to use to where we clone a Git repository to, or a empty directory if `git_url` is not specified."
+  default     = "$HOME/workspace"
+  mutable     = false
+  type        = "string"
+  name        = "Workspace"
+  icon        = "${data.coder_workspace.me.access_url}/icon/folder.svg"
 }
 
-variable "base_image" {
-  description = "The base image from Noel's Coder images that should be used."
-  default     = "base"
-  type        = string
+data "coder_parameter" "volume_dir" {
+  description = "Directory to persist for the Docker volume"
+  default     = "/home/noel"
+  mutable     = false
+  type        = "string"
+  name        = "Volume Persistence Directory"
+  icon        = "${data.coder_workspace.me.access_url}/icon/folder.svg"
+}
 
-  validation {
-    condition     = contains(["java", "golang", "base", "node", "rust", "dotnet", ""], var.base_image)
-    error_message = "Unknown base image to use"
+data "coder_parameter" "base_docker_image" {
+  description = "What base Docker image to use? These are dependent of Noel's Coder images available. Use the `custom_docker_image` option to use a custom one."
+  default     = "base"
+  mutable     = true
+  icon        = "${data.coder_workspace.me.access_url}/icon/docker.png"
+  name        = "Base Docker Image"
+  type        = "string"
+
+  option {
+    name  = "Custom"
+    value = ""
+  }
+
+  option {
+    icon  = "${data.coder_workspace.me.access_url}/icon/docker.png"
+    name  = "Base (ghcr.io/auguwu/coder-images/base)"
+    value = "base"
+  }
+
+  option {
+    icon  = "${data.coder_workspace.me.access_url}/icon/java.svg"
+    name  = "Java (ghcr.io/auguwu/coder-images/java)"
+    value = "java"
+  }
+
+  option {
+    name  = "Go (ghcr.io/auguwu/coder-images/golang)"
+    icon  = "https://go.dev/blog/go-brand/Go-Logo/SVG/Go-Logo_Aqua.svg"
+    value = "golang"
+  }
+
+  option {
+    icon  = "${data.coder_workspace.me.access_url}/icon/node.svg"
+    name  = "Node.js (ghcr.io/auguwu/coder-images/node)"
+    value = "node"
+  }
+
+  option {
+    icon  = "https://raw.githubusercontent.com/dotnet/brand/main/logo/dotnet-logo.svg"
+    name  = ".NET Core (ghcr.io/auguwu/coder-images/dotnet)"
+    value = "dotnet"
+  }
+
+  option {
+    icon  = "https://raw.githubusercontent.com/rust-lang/rust-artwork/master/logo/rust-logo-128x128.png"
+    name  = "Rust (ghcr.io/auguwu/coder-images/rust)"
+    value = "rust"
   }
 }
 
-variable "custom_image" {
-  description = "The image to use if the base image variable is empty"
+data "coder_parameter" "custom_docker_image" {
+  description = "Custom Docker image to use if the custom option was set."
+  mutable     = true
   default     = ""
-  type        = string
+  type        = "string"
+  name        = "Custom Docker Image"
+  icon        = "${data.coder_workspace.me.access_url}/icon/docker.png"
+
+  validation {
+    error = "Invalid registry image"
+
+    # Grabbed from https://github.com/distribution/distribution/blob/main/reference/regexp.go#L31-L34
+    regex = "(^$)|^((?:(?:[a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9])(?:(?:\\.(?:[a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]))+)?(?::[0-9]+)?/)?[a-z0-9]+(?:(?:(?:[._]|__|[-]*)[a-z0-9]+)+)?(?:(?:/[a-z0-9]+(?:(?:(?:[._]|__|[-]*)[a-z0-9]+)+)?)+)?)(?::([\\w][\\w.-]{0,127}))?(?:@([A-Za-z][A-Za-z0-9]*(?:[-_+.][A-Za-z][A-Za-z0-9]*)*[:][[:xdigit:]]{32,}))?$"
+  }
 }
 
-variable "home_dir" {
-  description = "What directory should be persisted in the Docker volume?"
-  default     = "/home/noel"
-  type        = string
-}
-
-variable "git_repository" {
-  description = "Repository URL that is cloned right after the workspace is created"
+data "coder_parameter" "git_repository" {
+  description = "Git repository URL to clone into the workspace directory. This can be changed if wished."
+  mutable     = true
   default     = ""
-  type        = string
+  type        = "string"
+  name        = "Git Repository"
 }
 
-variable "install_codeserver" {
-  description = "If the workspace should include code-server to work on this workspace with Visual Studio Code"
-  default     = false
-  type        = bool
-}
-
-variable "dotfiles_repo" {
-  description = "Repository URL of the dotfiles to initialize"
+data "coder_parameter" "dotfiles" {
+  description = "Git repository URL that holds your files that start with a '.'"
+  mutable     = true
   default     = ""
-  type        = string
+  type        = "string"
+  name        = "Dotfiles"
 }
 
-variable "docker_network_name" {
-  description = "Name of the Docker network to use."
+data "coder_parameter" "docker_network_name" {
+  description = "Name for the Docker network you wish to expose. This is useful for .coder/docker-compose.yml to link services between."
   default     = "fluff"
-  type        = string
+  mutable     = false
+  type        = "string"
+  name        = "Docker Network Name"
 }

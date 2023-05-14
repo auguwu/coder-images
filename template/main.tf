@@ -46,31 +46,39 @@ data "coder_workspace" "me" {
 
 resource "coder_agent" "main" {
   arch = "amd64"
-  dir  = var.home_dir
+  dir  = data.coder_parameter.volume_dir.value
   os   = "linux"
 
   metadata {
     display_name = "Processes"
-    key          = "proc_count"
-    script       = "ps aux | wc -l"
     interval     = 1
     timeout      = 1
+    script       = "ps aux | wc -l"
+    key          = "proc_count"
+  }
+
+  metadata {
+    display_name = "CPU Usage"
+    interval     = 1
+    timeout      = 1
+    script       = "vmstat | awk 'FNR==3 {printf \"%2.0f%%\", $13+14+16}'"
+    key          = "cpu"
   }
 
   metadata {
     display_name = "Load Average"
-    key          = "load"
-    script       = "awk '{print $1}' /proc/loadavg"
     interval     = 1
     timeout      = 1
+    script       = "awk '{print $1}' /proc/loadavg"
+    key          = "load"
   }
 
   metadata {
     display_name = "Disk Usage"
-    key          = "disk"
-    script       = "df -h | awk '$6 ~ /^\\/$/ { print $5 }'"
     interval     = 1
     timeout      = 1
+    script       = "df -h | awk '$6 ~ /^\\/$/ { print $5 }'"
+    key          = "disk"
   }
 
   metadata {
@@ -81,10 +89,18 @@ resource "coder_agent" "main" {
     key          = "containers"
   }
 
+  metadata {
+    display_name = "Memory Usage"
+    interval     = 1
+    timeout      = 1
+    script       = "free | awk '/^Mem/ { printf(\"%.0f%%\", $4/$2 * 100.0) }'"
+    key          = "memory"
+  }
+
   startup_script = <<-EOL
   #!/bin/bash
   # Fix folder permissions since root owns /home/noel for some reason???
-  sudo chown -R noel:noel /home/noel
+  sudo chown -R $USER:$USER /home/$USER
 
   if [ ! -f ~/.profile ]; then
     cp /etc/skel/.profile $HOME/.profile
@@ -110,37 +126,29 @@ resource "coder_agent" "main" {
     sleep 1
   done
 
-  # Install code-server if enabled
-  ${var.install_codeserver == true ? "curl -fsSL https://code-server.dev/install.sh | sh" : ""}
-  ${var.install_codeserver == true ? "code-server --auth none --port 3621 > /dev/null 2>&1 &" : ""}
-
   # Clone the given repository if needed
-  if ! [ -d "${var.workspace_dir}" ]; then
-    ${var.git_repository != "" ? "git clone ${var.git_repository} ${var.workspace_dir}" : ""}
+  if ! [ -d "${data.coder_parameter.workspace.value}" ]; then
+    ${data.coder_parameter.git_repository.value != "" ? "git clone ${data.coder_parameter.git_repository.value} ${data.coder_parameter.workspace.value}" : "mkdir ${data.coder_parameter.workspace.value}"}
   fi
 
-  if ! [ -d "${var.workspace_dir}" ]; then
-    mkdir ${var.workspace_dir}
+  if [ -n "${data.coder_parameter.docker_network_name.value}" ]; then
+    docker network create "${data.coder_parameter.docker_network_name.value}" --driver=bridge >/dev/null 2>&1
+    echo "Created Docker network \`${data.coder_parameter.docker_network_name.value}\`, you can use it with .coder/docker-compose.yml as a external network!"
   fi
 
-  if [ -n "${var.docker_network_name}" ]; then
-    docker network create "${var.docker_network_name}" --driver=bridge >/dev/null 2>&1
-    echo "Created Docker network \`${var.docker_network_name}\`, you can use it with .coder/docker-compose.yml as a external network!"
-  fi
-
-  # if ${var.workspace_dir}/.coder exists, then we will run the pre-init scripts
+  # if ${data.coder_parameter.workspace.value}/.coder exists, then we will run the pre-init scripts
   # and then the Docker Compose project (if any).
-  if [ -d "${var.workspace_dir}/.coder" ]; then
+  if [ -d "${data.coder_parameter.workspace.value}/.coder" ]; then
     # Run any pre-init scripts in .coder/scripts/pre-init
-    if [ -d "${var.workspace_dir}/.coder/scripts/pre-init" ]; then
-      files=$(find "${var.workspace_dir}/.coder/scripts/pre-init" -maxdepth 1 -type f -executable -name '*.sh')
+    if [ -d "${data.coder_parameter.workspace.value}/.coder/scripts/pre-init" ]; then
+      files=$(find "${data.coder_parameter.workspace.value}/.coder/scripts/pre-init" -maxdepth 1 -type f -executable -name '*.sh')
       for f in "$files"; do
-        (cd "${var.workspace_dir}/.coder" && bash $f) || echo "[coder::preinit] Unable to run pre-init script [$f]"
+        (cd "${data.coder_parameter.workspace.value}/.coder" && bash $f) || echo "[coder::preinit] Unable to run pre-init script [$f]"
       done
     fi
 
     # Run the docker compose project
-    if [ -f "${var.workspace_dir}/.coder/docker-compose.yml" ]; then
+    if [ -f "${data.coder_parameter.workspace.value}/.coder/docker-compose.yml" ]; then
       dc=""
 
       if command -v docker-compose &>/dev/null; then
@@ -153,41 +161,26 @@ resource "coder_agent" "main" {
 
       if [ -n "$dc" ]; then
         echo "[coder::docker-compose] Using \`$dc\` as the Docker compose command!"
-        $dc -f "${var.workspace_dir}/.coder/docker-compose.yml" up -d
+        $dc -f "${data.coder_parameter.workspace.value}/.coder/docker-compose.yml" up -d
       fi
     fi
 
     # run post-init scripts
-    if [ -d "${var.workspace_dir}/.coder/scripts/post-init" ]; then
-      files=$(find "${var.workspace_dir}/.coder/scripts/post-init" -maxdepth 1 -type f -executable -name '*.sh')
+    if [ -d "${data.coder_parameter.workspace.value}/.coder/scripts/post-init" ]; then
+      files=$(find "${data.coder_parameter.workspace.value}/.coder/scripts/post-init" -maxdepth 1 -type f -executable -name '*.sh')
       for f in "$files"; do
-        (cd "${var.workspace_dir}/.coder" && bash $f) || echo "[coder::postinit] Unable to run post-init script [$f]"
+        (cd "${data.coder_parameter.workspace.value}/.coder" && bash $f) || echo "[coder::postinit] Unable to run post-init script [$f]"
       done
     fi
   fi
 
   # initialize dotfiles
-  ${var.dotfiles_repo != "" ? "coder dotfiles -y ${var.dotfiles_repo}" : ""}
+  ${data.coder_parameter.dotfiles.value != "" ? "coder dotfiles \"${data.coder_parameter.dotfiles.value}\" -y" : ""}
   EOL
 }
 
-resource "coder_app" "code-server" {
-  count        = var.install_codeserver ? 1 : 0
-  agent_id     = coder_agent.main.id
-  slug         = "code-server"
-  display_name = "Visual Studio Code"
-  url          = "http://localhost:3621/?folder=${var.workspace_dir}"
-  icon         = "/icon/code.svg"
-
-  healthcheck {
-    threshold = 10
-    interval  = 10
-    url       = "http://localhost:3621/healthz"
-  }
-}
-
 data "docker_registry_image" "image" {
-  name = var.custom_image != "" ? var.custom_image : "ghcr.io/auguwu/coder-images/${var.base_image}:latest"
+  name = data.coder_parameter.custom_docker_image.value != "" ? data.coder_parameter.custom_docker_image.value : "ghcr.io/auguwu/coder-images/${data.coder_parameter.base_docker_image.value}"
 }
 
 resource "docker_image" "docker_image" {
@@ -208,7 +201,7 @@ resource "docker_container" "workspace" {
   ]
 
   volumes {
-    container_path = var.home_dir
+    container_path = data.coder_parameter.volume_dir.value
     host_path      = docker_volume.coder_workspace.mountpoint
   }
 

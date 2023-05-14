@@ -19,8 +19,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# use April 26th image (since Adoptium doesn't support Ubuntu Lunar yet)
-FROM ghcr.io/auguwu/coder-images/base:2023.04.26
+FROM ghcr.io/auguwu/coder-images/base
 
 ENV USERNAME=noel
 
@@ -29,14 +28,16 @@ USER root
 
 # Set version environment variables
 ENV GRADLE_VERSION="8.1.1"
-ENV MAVEN_VERSION="3.9.1"
+ENV MAVEN_VERSION="3.9.2"
 
 # install required things
 RUN DEBIAN_FRONTEND="noninteractive" apt install -y wget libarchive-tools
 
-# Install Temurin 19
+# Install Temurin JDK 20
 RUN wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | sudo apt-key add -
-RUN echo "deb https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" | sudo tee /etc/apt/sources.list.d/adoptium.list
+
+# force it to use the Kinetic repository until it supports 23.04
+RUN echo "deb https://packages.adoptium.net/artifactory/deb kinetic main" | sudo tee /etc/apt/sources.list.d/adoptium.list
 RUN DEBIAN_FRONTEND="noninteractive" apt update && \
   DEBIAN_FRONTEND="noninteractive" apt install -y temurin-20-jdk
 

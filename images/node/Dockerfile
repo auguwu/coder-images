@@ -27,7 +27,7 @@ ENV USERNAME=noel
 USER root
 
 # versions here
-ENV NODE_VERSION="20.0.0"
+ENV NODE_VERSION="20.1.0"
 
 # Install xz-utils so we can unpack the Node.js installation
 RUN DEBIAN_FRONTEND="noninteractive" apt install -y xz-utils
