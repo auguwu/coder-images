@@ -99,14 +99,14 @@ RUN set -eux; \
   curl -L ${CODER_DOWNLOAD_URL}      | tar xfz - -C /opt/coder/cli --strip-components=1; \
   curl -L ${GITHUB_CLI_DOWNLOAD_URL} | tar xfz - -C /opt/github/cli --strip-components=1; \
   curl -L ${HELM_DOWNLOAD_URL}       | tar xfz - -C /opt/helm --strip-components=1; \
-  curl -L ${TERRAFORM_DOWNLOAD_URL}  | bsdtar xfz - --strip-components=1 -C /opt/hashicorp/terraform; \
+  curl -L ${TERRAFORM_DOWNLOAD_URL}  | bsdtar xfz - -C /opt/hashicorp/terraform; \
   curl -fsSL -o /usr/local/bin/bazel             ${BAZELISK_DOWNLOAD_URL}; \
   curl -fsSL -o /usr/local/bin/bazel-buildifier  ${BAZEL_BUILDIFIER_DOWNLOAD_URL}; \
   curl -fsSL -o /usr/local/bin/bazel-buildozer   ${BAZEL_BUILDOZER_DOWNLOAD_URL}; \
   curl -fsSL -o /usr/local/bin/bazel-unused-deps ${BAZEL_UNUSED_DEPS_DOWNLOAD_URL};
 
 # Let the user execute `kubectl` and `bazel` (which is just Bazelisk so we don't have to have a Java environment in this image)
-RUN chmod +x /usr/local/bin/kubectl /usr/local/bin/bazel /usr/local/bin/bazel-*
+RUN chmod +x /usr/local/bin/kubectl /usr/local/bin/bazel /usr/local/bin/bazel-* /opt/hashicorp/terraform/terraform
 
 # Set back to our user!
 USER ${USERNAME}
