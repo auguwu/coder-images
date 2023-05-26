@@ -1,6 +1,7 @@
 {
-  "[terraform]": {
-    "editor.tabSize": 2,
-    "editor.defaultFormatter": "hashicorp.terraform"
-  }
+    "editor.tabSize": 4,
+    "[terraform]": {
+        "editor.tabSize": 2,
+        "editor.defaultFormatter": "hashicorp.terraform"
+    }
 }

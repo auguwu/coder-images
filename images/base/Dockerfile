@@ -1,5 +1,5 @@
 # 💐💚 coder-images: Optimized, and easy Docker images and Coder templates to use in your everyday work!
-# Copyright (c) 2022-2023 Noel <cutie@floofy.dev>
+# Copyright (c) 2022-2023 Noel Towa <cutie@floofy.dev>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -36,7 +36,7 @@ RUN apt update && \
   apt upgrade -y && \
   apt install -y sudo git curl neofetch git-lfs ca-certificates \
                 unzip zip bash vim nano python3 python3-pip libarchive-tools gnupg lsb-release pkg-config \
-                libssl-dev tree htop jq
+                libssl-dev tree htop jq zsh oh-my-zsh
 
 # Setup the user environment
 RUN groupadd -g ${USER_GID} ${USERNAME} && \
@@ -60,10 +60,10 @@ RUN usermod -aG docker ${USERNAME}
 # stuff here
 ENV BAZEL_BUILDTOOLS_VERSION="6.1.2"
 ENV GITHUB_CLI_VERSION="2.29.0"
-ENV CODER_CLI_VERSION="0.23.2"
+ENV CODER_CLI_VERSION="0.23.7"
 ENV TERRAFORM_VERSION="1.4.6"
-ENV BAZELISK_VERSION="1.16.0"
-ENV KUBECTL_VERSION="1.27.1"
+ENV BAZELISK_VERSION="1.17.0"
+ENV KUBECTL_VERSION="1.27.2"
 ENV HELM_VERSION="3.12.0"
 
 # Get current architecture and download software here
