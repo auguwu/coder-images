@@ -6,8 +6,8 @@ This is the Docker image that bundles the Go compiler with **goreleaser** and **
 | ---------- | -------------------------------------------------- | --------------------- |
 | Go         | The Go programming language                        | [v1.20.4][golang]       |
 | GoReleaser | Deliver Go binaries as fast and easily as possible | [v1.18.2][goreleaser] |
-| Golang CI  | Fast linters Runner for Go                         | [v1.52.2][golangci]   |
+| Golang CI  | Fast linters Runner for Go                         | [v1.53.2][golangci]   |
 
 [goreleaser]: https://github.com/goreleaser/goreleaser/releases/tag/v1.18.2
-[golangci]:   https://github.com/golangci/golangci-lint/releases/tag/v1.52.2
+[golangci]:   https://github.com/golangci/golangci-lint/releases/tag/v1.53.2
 [golang]:     https://github.com/golang/go/releases/tag/go1.20.4
