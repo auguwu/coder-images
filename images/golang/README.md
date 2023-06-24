@@ -9,5 +9,5 @@ This is the Docker image that bundles the Go compiler with **goreleaser** and **
 | Golang CI  | Fast linters Runner for Go                         | [v1.53.2][golangci]   |
 
 [goreleaser]: https://github.com/goreleaser/goreleaser/releases/tag/v1.18.2
-[golangci]:   https://github.com/golangci/golangci-lint/releases/tag/v1.53.2
-[golang]:     https://github.com/golang/go/releases/tag/go1.20.4
+[golangci]:   https://github.com/golangci/golangci-lint/releases/tag/v1.53.3
+[golang]:     https://github.com/golang/go/releases/tag/go1.20.5
