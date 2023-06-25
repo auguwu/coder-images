@@ -197,7 +197,8 @@ resource "docker_container" "workspace" {
   count    = data.coder_workspace.me.start_count
   env = [
     "CODER_AGENT_TOKEN=${coder_agent.main.token}",
-    "CODER_ACCESS_URL=https://coder.floofy.dev"
+    "CODER_ACCESS_URL=https://coder.floofy.dev",
+    "SHELL=/usr/bin/zsh"
   ]
 
   volumes {
