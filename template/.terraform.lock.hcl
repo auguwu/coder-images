@@ -2,23 +2,25 @@
 # Manual edits may be lost in future updates.
 
 provider "registry.terraform.io/coder/coder" {
-  version     = "0.8.2"
-  constraints = "0.8.2"
+  version     = "0.8.3"
+  constraints = "0.8.3"
   hashes = [
-    "h1:1Ay485hugwF0UBA8F9BEOqn36hciICQocox3kMyhpx4=",
-    "h1:33p2hsIzvAB1YZN6HQhCBAdQdYW7tCxZ0euU6LZnBh4=",
-    "h1:4626Uedt6XGMFlyzkW4ikKtLt/uaMbw9A4aclM1qQOM=",
-    "h1:4rhz4eMLStrsUO3Oin6fpNpyTIMSosU2Xv4GL9mNsKs=",
-    "h1:IUlAd8tM/hNZ4J27N+gabA45DOuQg6BsK9WVVVGIvnc=",
-    "h1:J0lfSouGa/0y9+mWYFJqvi/n9ukV4bKMKmzHOLvB+bI=",
-    "h1:LkXEmlXCrRim+AOn+eeAEbNTmLcbxY3ck9dnR91PY5s=",
-    "h1:NpH+kt3ydfaV6LW/EkkolG4uOk3FKFqvbSGtdg7Y4pk=",
-    "h1:P1+4n/cT60xlkAX9VLWL3AkwH2d2ECg7n2OB+uyY0YU=",
-    "h1:UqrP9bL3JeLFhi2XSXg++WwB8BgSW78HBkDthqFYkOU=",
-    "h1:bo7svjX6cwRBl2F0nFKX5t3iOe8H6Xp/s2XRjZDoSVA=",
-    "h1:keWBnSJ2T/12sBggrWpI1OR4W/zBnZ/KuxWbf64Tlic=",
-    "h1:mgdhqtZWq5my/J4E0vFdNFBc8cMADfaw9XiZfKw3H08=",
-    "h1:pL99XqLxpzM0b4w5/4cMU1hFFLvdRtOuVC9dMTi9XRo=",
+    "h1:TBRniXgio0mnsuF8hmzNcXUOvrK7C9AWIjOb/1JPXv4=",
+    "zh:18feb05b2d97a101b737795e74065f89a5ada72dac1e82cc02098c48b9789b4c",
+    "zh:1acc74f9ee2384b1bf9201c826cad95d2a428a67177790dd1c81b7261df45a39",
+    "zh:1d7639008ee6572d7bc8f11e0d659a425304b0f07b7630790a38d2b4c75bba92",
+    "zh:3edb46629a506f53b9cc179f14a626a4c467f9669e7e37e727889bb4ac96df78",
+    "zh:4a7fd665fbe2f6fb3b96109171cd56133e5e0dac710bbaa4d1209fd97559ac0f",
+    "zh:7336b83e0f7c9cd6eadb7f45eac8049cad917ea8f5682eedfb49ea9bf5a6d8f4",
+    "zh:8df58ed47b017ea94adc234a0845b676bb2b3e4aba3506b0af8a8a6973aeb647",
+    "zh:9a220899d4fae5bccae6984c1dfe83d7f336a29b57a189af960d9d070a7c95bb",
+    "zh:a3bb025a477d8c99fb050d1552c9eedfe92db5756445d6f91850d5b5e0f1db2d",
+    "zh:c23021f836bfaab6c00e380154490ded47c6afb86779f14ac98dc14102977b0d",
+    "zh:ef089f56b52823fa726b500420e46a948894b9b52f6700105ac272e65eddf8d3",
+    "zh:f1cdf01d0890736500273698a7e1c98d81b1c3a810d04cf526a22aeb1fc1c7af",
+    "zh:f2fe971ceeb4e478fdde73b19bd1c7ceed9b5ab21231beb2c6f1a99a1fac7b98",
+    "zh:f569b65999264a9416862bca5cd2a6177d94ccb0424f3a4ef424428912b9cb3c",
+    "zh:fa1ec022d97425ccc9f784fde17cbc52b40b715a00604161db10ab98c1161400",
   ]
 }
 
