@@ -102,6 +102,10 @@ resource "coder_agent" "main" {
   # Fix folder permissions since root owns /home/noel for some reason???
   sudo chown -R $USER:$USER /home/$USER
 
+  # Set default shell to zsh
+  sudo chsh -s /usr/bin/zsh $USER
+  sudo chsh -s /usr/bin/zsh root
+
   if [ ! -f ~/.profile ]; then
     cp /etc/skel/.profile $HOME/.profile
   fi
@@ -198,7 +202,7 @@ resource "docker_container" "workspace" {
   env = [
     "CODER_AGENT_TOKEN=${coder_agent.main.token}",
     "CODER_ACCESS_URL=https://coder.floofy.dev",
-    "SHELL=/usr/bin/zsh"
+    "TZ=America/Los_Angeles"
   ]
 
   volumes {
