@@ -21,9 +21,6 @@
 
 FROM ubuntu:lunar
 
-# Set the shell to Bash
-SHELL ["/bin/bash", "-c"]
-
 # For now, this will be `noel` as the user. You can extend this to be whatever you like.
 ENV USERNAME=noel \
   USER_UID=1001 \
@@ -36,7 +33,7 @@ RUN apt update && \
   apt upgrade -y && \
   apt install -y sudo git curl neofetch git-lfs ca-certificates \
                 unzip zip bash vim nano python3 python3-pip libarchive-tools gnupg lsb-release pkg-config \
-                libssl-dev tree htop jq zsh ripgrep exa bat
+                libssl-dev tree htop jq zsh ripgrep exa bat protobuf-compiler
 
 # Setup the user environment
 RUN groupadd -g ${USER_GID} ${USERNAME} && \

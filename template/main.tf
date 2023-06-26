@@ -103,8 +103,8 @@ resource "coder_agent" "main" {
   sudo chown -R $USER:$USER /home/$USER
 
   # Set default shell to zsh
-  sudo chsh -s /usr/bin/zsh $USER
-  sudo chsh -s /usr/bin/zsh root
+  sudo chsh -s /bin/zsh $USER
+  sudo chsh -s /bin/zsh root
 
   if [ ! -f ~/.profile ]; then
     cp /etc/skel/.profile $HOME/.profile
@@ -202,6 +202,7 @@ resource "docker_container" "workspace" {
   env = [
     "CODER_AGENT_TOKEN=${coder_agent.main.token}",
     "CODER_ACCESS_URL=https://coder.floofy.dev",
+    "SHELL=/bin/zsh",
     "TZ=America/Los_Angeles"
   ]
 
