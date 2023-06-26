@@ -41,7 +41,7 @@ jobs:
             - name: Update Coder template!
               uses: matifali/update-coder-template@v2
               with:
-                CODER_TEMPLATE_VERSION: "${{stepss.outputs.commit.hash}}"
+                CODER_TEMPLATE_VERSION: "${{steps.outputs.commit.hash}}"
                 CODER_SESSION_TOKEN: "${{secrets.CODER_TOKEN}}"
                 CODER_TEMPLATE_NAME: coder
                 CODER_TEMPLATE_DIR: ./template
