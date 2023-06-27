@@ -75,6 +75,12 @@ data "coder_parameter" "base_docker_image" {
   }
 
   option {
+    icon  = "https://user-images.githubusercontent.com/709451/182802334-d9c42afe-f35d-4a7b-86ea-9985f73f20c3.png"
+    name  = "Bun (ghcr.io/auguwu/coder-images/bun)"
+    value = "bun"
+  }
+
+  option {
     icon  = "https://raw.githubusercontent.com/dotnet/brand/main/logo/dotnet-logo.svg"
     name  = ".NET Core (ghcr.io/auguwu/coder-images/dotnet)"
     value = "dotnet"
