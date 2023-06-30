@@ -28,7 +28,7 @@ USER root
 
 # Put versions in environment variables
 ENV GOLANG_VERSION="1.20.5"
-ENV GORELEASER_VERSION="1.18.2"
+ENV GORELEASER_VERSION="1.19.1"
 ENV GOLANGCI_VERSION="1.53.3"
 
 # Install packages here.

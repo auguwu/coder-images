@@ -4,6 +4,6 @@ This image extends from the [base image](https://github.com/auguwu/coder-images/
 ## Bundled Software
 | Name  | Description                                                                                | Version        |
 | ----- | ------------------------------------------------------------------------------------------ | -------------- |
-| `bun` | Incredibly fast JavaScript runtime, bundler, test runner, and package manager – all in one | [v0.6.10][bun] |
+| `bun` | Incredibly fast JavaScript runtime, bundler, test runner, and package manager – all in one | [v0.6.12][bun] |
 
-[bun]: https://github.com/oven-sh/bun/releases/tag/bun-v0.6.10
+[bun]: https://github.com/oven-sh/bun/releases/tag/bun-v0.6.12
