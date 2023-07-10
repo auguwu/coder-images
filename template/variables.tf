@@ -117,6 +117,14 @@ data "coder_parameter" "git_repository" {
   name        = "Git Repository"
 }
 
+data "coder_parameter" "git_branch" {
+  description = "A valid branch available on the Git repository to clone from. By default, this will clone from the default branch."
+  mutable     = false
+  default     = ""
+  type        = "string"
+  name        = "Git Branch"
+}
+
 data "coder_parameter" "dotfiles" {
   description = "Git repository URL that holds your files that start with a '.'"
   mutable     = true

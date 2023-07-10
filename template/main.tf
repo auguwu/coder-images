@@ -132,7 +132,7 @@ resource "coder_agent" "main" {
 
   # Clone the given repository if needed
   if ! [ -d "${data.coder_parameter.workspace.value}" ]; then
-    ${data.coder_parameter.git_repository.value != "" ? "git clone ${data.coder_parameter.git_repository.value} ${data.coder_parameter.workspace.value}" : "mkdir ${data.coder_parameter.workspace.value}"}
+    ${data.coder_parameter.git_repository.value != "" ? "git clone ${data.coder_parameter.git_repository.value} ${data.coder_parameter.workspace.value} ${data.coder_parameter.git_branch.value != "" ? "-b ${data.coder_parameter.git_branch.value}" : ""}" : "mkdir ${data.coder_parameter.workspace.value}"}
   fi
 
   if [ -n "${data.coder_parameter.docker_network_name.value}" ]; then
