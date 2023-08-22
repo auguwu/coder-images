@@ -24,7 +24,7 @@ FROM ghcr.io/auguwu/coder-images/base
 ENV USERNAME=noel
 
 USER root
-ENV BUN_VERSION="0.6.13"
+ENV BUN_VERSION="0.7.3"
 
 RUN set -eux;                                                                                                              \
     arch="$(dpkg --print-architecture)";                                                                                   \

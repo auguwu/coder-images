@@ -23,16 +23,9 @@ FROM ghcr.io/auguwu/coder-images/base
 
 ENV USERNAME=noel
 
-# Run as root so we don't have to repeat sudo
 USER root
+ENV NODE_VERSION="20.5.1"
 
-# versions here
-ENV NODE_VERSION="20.4.0"
-
-# Install xz-utils so we can unpack the Node.js installation
-RUN DEBIAN_FRONTEND="noninteractive" apt install -y xz-utils
-
-# download Node here
 RUN set -eux;                                                                                                      \
     arch="$(dpkg --print-architecture)";                                                                           \
     case "${arch}" in                                                                                              \
@@ -50,5 +43,4 @@ ENV PATH=$PATH:/opt/nodejs/bin
 RUN npm i -g yarn pnpm
 
 USER ${USERNAME}
-
 ENV PATH=$PATH:/opt/nodejs/bin

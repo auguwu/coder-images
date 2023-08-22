@@ -4,6 +4,6 @@ This image extends from the [base image](https://github.com/auguwu/coder-images/
 ## Bundled Software
 | Name    | Description                         | Version          |
 | ------- | ----------------------------------- | ---------------- |
-| Node.js | Node.js JavaScript runtime ✨🐢🚀✨ | [v20.4.0][node] |
+| Node.js | Node.js JavaScript runtime ✨🐢🚀✨ | [v20.5.1][node] |
 
-[node]: https://github.com/nodejs/node/releases/v20.4.0
+[node]: https://github.com/nodejs/node/releases/v20.5.1
