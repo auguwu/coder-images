@@ -27,9 +27,9 @@ ENV USERNAME=noel
 USER root
 
 # Put versions in environment variables
-ENV GOLANG_VERSION="1.20.5"
-ENV GORELEASER_VERSION="1.19.2"
-ENV GOLANGCI_VERSION="1.53.3"
+ENV GOLANG_VERSION="1.21.0"
+ENV GORELEASER_VERSION="1.20.0"
+ENV GOLANGCI_VERSION="1.54.2"
 
 # Install packages here.
 RUN set -eux; \

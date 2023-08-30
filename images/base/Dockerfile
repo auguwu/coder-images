@@ -33,18 +33,14 @@ RUN apt update && \
   apt upgrade -y && \
   apt install -y sudo git curl neofetch git-lfs ca-certificates \
                 unzip zip bash vim nano python3 python3-pip libarchive-tools gnupg lsb-release pkg-config \
-                libssl-dev tree htop jq zsh ripgrep exa bat protobuf-compiler
+                libssl-dev tree htop jq zsh ripgrep exa bat protobuf-compiler xz-utils
 
-# Setup the user environment
 RUN groupadd -g ${USER_GID} ${USERNAME} && \
   useradd -rm -d /home/${USERNAME} -s /bin/bash -g ${USERNAME} -u ${USER_UID} ${USERNAME} && \
   echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME && \
   chown ${USER_UID}:${USER_GID} /home/${USERNAME}
 
-# Configure git-lfs
 RUN git lfs install --system
-
-# Install Docker
 RUN mkdir -p /etc/apt/keyrings && \
   curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg && \
   echo \
@@ -54,17 +50,14 @@ RUN mkdir -p /etc/apt/keyrings && \
 RUN apt update && apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
 RUN usermod -aG docker ${USERNAME}
 
-# stuff here
-ENV BAZEL_BUILDTOOLS_VERSION="6.1.2"
-ENV GITHUB_CLI_VERSION="2.31.0"
-ENV CODER_CLI_VERSION="0.25.0"
-ENV TERRAFORM_VERSION="1.5.2"
-ENV BAZELISK_VERSION="1.17.0"
-ENV KUBECTL_VERSION="1.27.3"
-ENV HELM_VERSION="3.12.1"
+ENV BAZEL_BUILDTOOLS_VERSION="6.3.2"
+ENV GITHUB_CLI_VERSION="2.32.0"
+ENV CODER_CLI_VERSION="2.1.0"
+ENV TERRAFORM_VERSION="1.5.5"
+ENV BAZELISK_VERSION="1.18.0"
+ENV KUBECTL_VERSION="1.28.0"
+ENV HELM_VERSION="3.12.3"
 
-# Get current architecture and download software here
-# also this looks like shit, i know!
 RUN set -eux; \
   arch="$(dpkg --print-architecture)"; \
   case "${arch}" in \
@@ -91,7 +84,7 @@ RUN set -eux; \
       HELM_DOWNLOAD_URL="https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz"; \
       ;; \
   esac; \
-  mkdir -p /opt/coder/cli /opt/github/cli /opt/hashicorp/terraform /opt/helm; \
+  mkdir -p /opt/coder/cli /opt/github/cli /opt/hashicorp/terraform /opt/helm /tmp/nixos-install; \
   curl -L -o /usr/local/bin/kubectl ${KUBECTL_DOWNLOAD_URL}; \
   curl -L ${CODER_DOWNLOAD_URL}      | tar xfz - -C /opt/coder/cli --strip-components=1; \
   curl -L ${GITHUB_CLI_DOWNLOAD_URL} | tar xfz - -C /opt/github/cli --strip-components=1; \
@@ -102,14 +95,10 @@ RUN set -eux; \
   curl -fsSL -o /usr/local/bin/bazel-buildozer   ${BAZEL_BUILDOZER_DOWNLOAD_URL}; \
   curl -fsSL -o /usr/local/bin/bazel-unused-deps ${BAZEL_UNUSED_DEPS_DOWNLOAD_URL};
 
-# Let the user execute `kubectl` and `bazel` (which is just Bazelisk so we don't have to have a Java environment in this image)
 RUN chmod +x /usr/local/bin/kubectl /usr/local/bin/bazel /usr/local/bin/bazel-* /opt/hashicorp/terraform/terraform
 
-# Set back to our user!
 USER ${USERNAME}
 WORKDIR /home/${USERNAME}
 
 ENV PATH=$PATH:/opt/coder/cli:/opt/hashicorp/terraform:/opt/helm:/opt/github/cli/bin:/home/${USERNAME}/.local/bin
-
-# Add common Helm repositores
 RUN helm repo add bitnami https://charts.bitnami.com/bitnami

@@ -2,38 +2,25 @@
 # Manual edits may be lost in future updates.
 
 provider "registry.terraform.io/coder/coder" {
-  version     = "0.11.0"
-  constraints = "0.11.0"
+  version     = "0.11.1"
+  constraints = "0.11.1"
   hashes = [
-    "h1:3iVeQ5OdfumLUQkJomiZK7uyRgTdAj6IumVbNPJOyi8=",
-    "h1:9F8yb4ehMSiWyIaYDQXWDoAT+7WH5TY2F8UwVh2fyWE=",
-    "h1:FS//VXOxh2/VcGi8bPdxoI85yQmpZkbRguWlbCloLbw=",
-    "h1:HkjxQAFhof+YJFFooWO3hhzl7BQwMDxtvJey/MDPaqU=",
-    "h1:IzCayLwBdV0UFFwxroGjB+t36RrOdtbJLwsTq+SpQPI=",
-    "h1:Rw0xuShkvuK+rTDcWxYAEyuUmmmrv7yI2BweYhlAeTM=",
-    "h1:V4lNPQbd3AI+EUqvouLLVVwpPElu7vsoH7OaWcXVQBg=",
-    "h1:X2LLtHyH0i7fUaOcEBA3+UOID+4iOdTZYjJM+wsiZEc=",
-    "h1:ciYalLx+8lwREQG6SNmJNL/SZo0sYwF1rrgjnu7hYYs=",
-    "h1:dmQLPKIoWszOSluOSwWQgZXSu3SliC71VN4E0LWO2Qw=",
-    "h1:iJ6kLbt7/sFV+NSG5www6O8f3zZQDlBU48EGd+5FUrQ=",
-    "h1:n5u1qNIp02uLCfdrjJPZadZwRxO3aflTZ021u1Ba5dw=",
-    "h1:ngnugTwmkAKAxkpGQ1ycH6I6jIUahgJQQP35XhFLOQE=",
-    "h1:wzq06PJxvB+zAnOsu7TJUhbkvHXsYGT9vRBUMWfbJi4=",
-    "zh:2ca19180a2c6ff9e30d9d1d6d845771c3f6771779185cd95e6f8a348abf82c4e",
-    "zh:48daf755756daf1ca72536b60513d059157967e8d8f21413e1561e6b595b13c3",
-    "zh:5b4a0e9912fd31306797ed5aa001a877f1e6884ddd2c9e55ec473252d2638646",
-    "zh:67b4dcf851e80785b2f6e94640562eb6b341791c10187a0adea454dce9b37c19",
-    "zh:7b2a044a5d08491c7ba61dda13a0dc1607702def1ee84a9f286c327004141a20",
-    "zh:872e8f8e6e4d304e6905f1a13ccaaef36facec5d8c09ef943880fcfc5651dfdc",
-    "zh:98b772bfed4a7c2790ea2ff3ebfd6a9efa652b71d6b0bfc86e99e7ce2a19838b",
-    "zh:a69dc2718a546514897198a85e0f5a667e04c1c93f8772f33c2925a75579a23d",
-    "zh:ad2dab5e0fb9b98e34565339ed1fe0e3756163516ba40ee4bf6fb3ecd5417827",
-    "zh:cacad965fc420d33207d64d74d4c8e5f4ee6ce9e982a07baab8bff901aae9ca5",
-    "zh:cc2417989a09f09933f70076ce500cc2e6eba9e2ecf1fe02ede56c4b6fb88c06",
-    "zh:cfe7ae9cdb789dc9e4bd8b8c81834259e0796253bb00a57928eea0e709089721",
-    "zh:da9561a119b6950597058cedd8b481d39fae9929c44f4168dfe41c84127c780d",
+    "h1:T1TuqSQCzAmzWQQ5oCw4wb4WiTyXV3Oo0ZxNDUOwHEw=",
+    "zh:0dacbf879fbfd988d64a05b639992c8c6be577e451ba6102cc8719e6c43010ca",
+    "zh:553b078a2d5a6704753b6acbe82923509d2fbd81c7c197e441c7dd637ea008a0",
+    "zh:5830bd13d5de0ed62fdded1e15871e636c4cefca2d2775b05bbbd1991438579e",
+    "zh:60b4e1d371b8bf85ea12970cb66ff44c19d4f1bdfbaa60df0b31497fbad3c311",
+    "zh:65216cec7a77921ca00269eb3da6e8bc97741099b4f1158045a1972a0b5ff52f",
+    "zh:6c3ac480f606607cc0daeede49673bbf1d17fa3a46c90d1ddbb40a5dd25e8d92",
+    "zh:7abb5070f2f0d714762dc0fd4bbfcaf7fa08d2d4460f3923a8ddfb6c5c9b0203",
+    "zh:8411d7d1bb2db08cbbd1f93240108eb7ea889311527ab21947e263140213f0d6",
+    "zh:883590f351eda4d9f2bdf42d784b0243ab57049e78b6e13756e835a19a425510",
+    "zh:955cde64638caa728edaac2883a09760005dff921288ffcb876ddfa8376a4119",
+    "zh:9d34709908b941531b3eb2832083fc96433d4795bc1b8b6ab79ad6f1a1f33160",
+    "zh:a84cfee8100ec6da13ba3a71b43442e36edf2a47822222f68d18c226046c908e",
+    "zh:ecdc70d58846a2a877b6d4608e0d260038bae6d866f65c10b814436fd57855e7",
     "zh:f569b65999264a9416862bca5cd2a6177d94ccb0424f3a4ef424428912b9cb3c",
-    "zh:f64de864c686daaec01f185bca16235ecc130b0682b711b63f0339be8cca2b3d",
+    "zh:f8de72a299021bcadd2ed0078729e04a7391ebb6adaa565f4f540facc5ed9586",
   ]
 }
 
@@ -41,20 +28,7 @@ provider "registry.terraform.io/kreuzwerker/docker" {
   version     = "3.0.2"
   constraints = "3.0.2"
   hashes = [
-    "h1:7JHMaq5/GEJg1g+7fc4p+/JDTAlA/gm7CQQlNTOATBc=",
-    "h1:AiY0E7SIA398B4VZwZ7S9CCcZoFLmAF2v5yQCBN0TAU=",
-    "h1:DcRxJArfX6EiATluWeCBW7HoD6usz9fMoTK2U3dmyPk=",
-    "h1:PyVpi9KjpKXU2IlpP6paeoSeCRz59ALOilkF9bo+Xe4=",
-    "h1:RK5HMr5FODIH9IxQGMClB6PS0q2QII9OP/WisO8K9CU=",
-    "h1:Wb5kwP+4FYEpM+oORAsa7UJNtpSi9N6CJxxC45vlIv8=",
-    "h1:XjdpVL61KtTsuPE8swok3GY8A+Bu3TZs8T2DOEpyiXo=",
-    "h1:YZJY8ZVZr30bgLEmsprLE8XWBisw4zzq8G4dEIYUvHM=",
-    "h1:Z1RxP35qnQ3F7W7YIehNBJVgbiKy5h8PKPeQwSB30R4=",
     "h1:cT2ccWOtlfKYBUE60/v2/4Q6Stk1KYTNnhxSck+VPlU=",
-    "h1:f5QLFbvmpIkMnBnGfTXY8RtXOojo82xcE9L2xQDFC04=",
-    "h1:os8pBi4rbtFJJtzNWlcGhOVsz5V9UPJvo+L0wNQFYE8=",
-    "h1:tMiDR/3WQYAwE4Z7Xr1iqJN23z2GNr1ARis9yutVgjw=",
-    "h1:ytKK8fxS0qwNLZUgdm7KBRoyUnDBhWAIsqIaJ/AxFZA=",
     "zh:15b0a2b2b563d8d40f62f83057d91acb02cd0096f207488d8b4298a59203d64f",
     "zh:23d919de139f7cd5ebfd2ff1b94e6d9913f0977fcfc2ca02e1573be53e269f95",
     "zh:38081b3fe317c7e9555b2aaad325ad3fa516a886d2dfa8605ae6a809c1072138",
