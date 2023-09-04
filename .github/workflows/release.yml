@@ -30,7 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Grab version info
       id: tag
@@ -70,7 +70,7 @@ jobs:
         image: [node, rust, java, golang, dotnet, bun]
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Grab version info
       id: tag
