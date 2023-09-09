@@ -51,7 +51,7 @@ RUN apt update && apt install -y docker-ce docker-ce-cli containerd.io docker-co
 RUN usermod -aG docker ${USERNAME}
 
 # renovate: datasource=github-tags name=bazelbuild/buildtools
-ENV BAZEL_BUILDTOOLS_VERSION="6.3.2"
+ENV BAZEL_BUILDTOOLS_VERSION="v6.3.3"
 
 # renovate: datasource=github-tags name=cli/cli
 ENV GITHUB_CLI_VERSION="2.32.0"
