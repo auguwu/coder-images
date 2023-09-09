@@ -19,30 +19,37 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-name: Update Coder Template
+name: Test Images
 on:
     workflow_dispatch: {}
     push:
         branches:
             - master
         paths:
-          - 'template/**'
+            - 'images/**'
 jobs:
-    update-template:
+    test:
+        name: Pipeline ${{matrix.images}} (cr.floofy.dev/coder/${{matrix.images}})
         runs-on: ubuntu-latest
+        strategy:
+            fail-fast: true
+            matrix:
+                images: [base, bun, dotnet, golang, java, node, rust]
         steps:
-            - name: Checkout repository
+            - name: Checkout source code
               uses: actions/checkout@v4
 
-            - name: Get latest commit hash
-              id: commit
-              run: echo "hash=$(git rev-parse --short=8 HEAD)" >> $GITHUB_OUTPUT
+            - name: Setup Buildx
+              uses: docker/setup-buildx-action@v2
 
-            - name: Update Coder template!
-              uses: matifali/update-coder-template@v2
+            - name: Setup QEMU
+              uses: docker/setup-qemu-action@v2
+
+            - name: Build!
+              uses: docker/build-push-action@v4
               with:
-                CODER_TEMPLATE_VERSION: "${{steps.commit.outputs.hash}}"
-                CODER_SESSION_TOKEN: "${{secrets.CODER_TOKEN}}"
-                CODER_TEMPLATE_NAME: coder
-                CODER_TEMPLATE_DIR: ./template
-                CODER_URL: "https://coder.floofy.dev"
+                platforms: linux/amd64,linux/arm64
+                cache-from: type=gha,scope=${{matrix.images}}
+                cache-to: type=gha,scope=${{matrix.images}}
+                context: ./images/${{matrix.images}}
+                file: ./images/${{matrix.images}}/Dockerfile
