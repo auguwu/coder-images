@@ -26,7 +26,7 @@ ENV USERNAME=noel
 USER root
 
 # renovate: datasource=github-tags name=nodejs/node
-ENV NODE_VERSION="20.5.1"
+ENV NODE_VERSION="v20.6.1"
 
 RUN set -eux;                                                                                                      \
     arch="$(dpkg --print-architecture)";                                                                           \
