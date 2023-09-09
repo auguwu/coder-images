@@ -4,7 +4,6 @@
     "automerge": true,
     "automergeSchedule": ["at any time"],
     "timezone": "America/Los_Angeles",
-    "enabledManagers": ["github-tags", "terraform", "github-actions"],
     "vulnerabilityAlerts": {
         "labels": ["security"]
     },
