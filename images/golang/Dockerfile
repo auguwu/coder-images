@@ -22,16 +22,17 @@
 FROM ghcr.io/auguwu/coder-images/base
 
 ENV USERNAME=noel
-
-# Run as root so we don't have to repeat sudo
 USER root
 
-# Put versions in environment variables
+# renovate: datasource=github-tags name=github.com/golang/go
 ENV GOLANG_VERSION="1.21.0"
+
+# renovate: datasource=github-tags name=github.com/goreleaser/goreleaser
 ENV GORELEASER_VERSION="1.20.0"
+
+# renovate: datasource=github-tags name=github.com/golangci/golangci-lint
 ENV GOLANGCI_VERSION="1.54.2"
 
-# Install packages here.
 RUN set -eux; \
   arch="$(dpkg --print-architecture)"; \
   case "${arch}" in \

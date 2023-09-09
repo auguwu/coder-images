@@ -24,6 +24,8 @@ FROM ghcr.io/auguwu/coder-images/base
 ENV USERNAME=noel
 
 USER root
+
+# renovate: datasource=github-tags name=github.com/nodejs/node
 ENV NODE_VERSION="20.5.1"
 
 RUN set -eux;                                                                                                      \

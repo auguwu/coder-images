@@ -1,4 +1,18 @@
 {
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-    "extends": ["config:base"]
+    "extends": ["config:base"],
+    "automerge": true,
+    "automergeSchedule": ["at any time"],
+    "timezone": "America/Los_Angeles",
+    "enabledManagers": ["github-tags", "terraform", "github-actions"],
+    "vulnerabilityAlerts": {
+        "labels": ["security"]
+    },
+    "regexManagers": [
+        {
+            "description": "Allow updating software versions in Dockerfiles",
+            "fileMatch": ["Dockerfile$"],
+            "matchStrings": ["datasource=(?<datasource>.*?) name=(?<depName>.*?)\\sENV \\w+_VERSION=\"(?<currentValue>.*)\""]
+        }
+    ]
 }

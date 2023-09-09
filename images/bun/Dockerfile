@@ -24,6 +24,8 @@ FROM ghcr.io/auguwu/coder-images/base
 ENV USERNAME=noel
 
 USER root
+
+# renovate: datasource=github-tags name=github.com/oven-sh/bun
 ENV BUN_VERSION="0.7.3"
 
 RUN set -eux;                                                                                                              \

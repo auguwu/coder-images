@@ -22,18 +22,15 @@
 FROM ghcr.io/auguwu/coder-images/base
 
 ENV USERNAME=noel
-
-# Run as root so we don't have to repeat sudo
 USER root
 
-# Set version environment variables
+# renovate: datasource=github-tags name=github.com/gradle/gradle
 ENV GRADLE_VERSION="8.3"
+
+# renovate: datasource=github-tags name=github.com/apache/maven
 ENV MAVEN_VERSION="3.9.4"
 
-# install required things
 RUN DEBIAN_FRONTEND="noninteractive" apt install -y wget libarchive-tools
-
-# Install Temurin JDK 20
 RUN wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | sudo apt-key add -
 
 # force it to use the Kinetic repository until it supports 23.04
@@ -41,7 +38,6 @@ RUN echo "deb https://packages.adoptium.net/artifactory/deb kinetic main" | sudo
 RUN DEBIAN_FRONTEND="noninteractive" apt update && \
   DEBIAN_FRONTEND="noninteractive" apt install -y temurin-20-jdk
 
-# Install packages!
 RUN GRADLE_DOWNLOAD_URL="https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-all.zip"; \
   MAVEN_DOWNLOAD_URL="https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz"; \
   mkdir -p /opt/gradle; \
@@ -51,7 +47,6 @@ RUN GRADLE_DOWNLOAD_URL="https://services.gradle.org/distributions/gradle-${GRAD
 
 RUN chmod +x /opt/gradle/bin/gradle
 
-# Go back as the user
 USER ${USERNAME}
 
 ENV PATH=$PATH:/opt/maven/bin:/opt/gradle/bin

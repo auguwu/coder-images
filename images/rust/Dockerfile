@@ -22,18 +22,15 @@
 FROM ghcr.io/auguwu/coder-images/base
 
 ENV USERNAME=noel
-
-# Run as root so we don't have to repeat sudo
 USER root
 
-# rust version to install
+# renovate: datasource=github-tags name=github.com/rust-lang/rustup
 ENV RUSTUP_VERSION="1.26.0"
+
+# renovate: datasource=github-tags name=github.com/rust-lang/rust
 ENV RUST_VERSION="1.71.1"
 
-# Install the Rust (minimal) toolchain
 RUN apt install -y --no-install-recommends ca-certificates gcc libc6-dev
-
-# We need to install Rust on the user so it can properly add it to the path.
 USER ${USERNAME}
 
 RUN set -eux; \
