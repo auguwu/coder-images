@@ -24,13 +24,13 @@ FROM ghcr.io/auguwu/coder-images/base
 ENV USERNAME=noel
 USER root
 
-# renovate: datasource=github-tags name=github.com/golang/go
+# renovate: datasource=github-tags name=golang/go
 ENV GOLANG_VERSION="1.21.0"
 
-# renovate: datasource=github-tags name=github.com/goreleaser/goreleaser
+# renovate: datasource=github-tags name=goreleaser/goreleaser
 ENV GORELEASER_VERSION="1.20.0"
 
-# renovate: datasource=github-tags name=github.com/golangci/golangci-lint
+# renovate: datasource=github-tags name=golangci/golangci-lint
 ENV GOLANGCI_VERSION="1.54.2"
 
 RUN set -eux; \

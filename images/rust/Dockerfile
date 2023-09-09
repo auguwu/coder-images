@@ -24,10 +24,10 @@ FROM ghcr.io/auguwu/coder-images/base
 ENV USERNAME=noel
 USER root
 
-# renovate: datasource=github-tags name=github.com/rust-lang/rustup
+# renovate: datasource=github-tags name=rust-lang/rustup
 ENV RUSTUP_VERSION="1.26.0"
 
-# renovate: datasource=github-tags name=github.com/rust-lang/rust
+# renovate: datasource=github-tags name=rust-lang/rust
 ENV RUST_VERSION="1.71.1"
 
 RUN apt install -y --no-install-recommends ca-certificates gcc libc6-dev

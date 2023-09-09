@@ -25,7 +25,7 @@ ENV USERNAME=noel
 
 USER root
 
-# renovate: datasource=github-tags name=github.com/nodejs/node
+# renovate: datasource=github-tags name=nodejs/node
 ENV NODE_VERSION="20.5.1"
 
 RUN set -eux;                                                                                                      \

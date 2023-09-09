@@ -50,25 +50,25 @@ RUN mkdir -p /etc/apt/keyrings && \
 RUN apt update && apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
 RUN usermod -aG docker ${USERNAME}
 
-# renovate: datasource=github-tags name=github.com/bazelbuild/buildtools
+# renovate: datasource=github-tags name=bazelbuild/buildtools
 ENV BAZEL_BUILDTOOLS_VERSION="6.3.2"
 
-# renovate: datasource=github-tags name=github.com/cli/cli
+# renovate: datasource=github-tags name=cli/cli
 ENV GITHUB_CLI_VERSION="2.32.0"
 
-# renovate: datasource=github-tags name=github.com/coder/coder
+# renovate: datasource=github-tags name=coder/coder
 ENV CODER_CLI_VERSION="2.1.0"
 
-# renovate: datasource=github-tags name=github.com/hashicorp/terraform
+# renovate: datasource=github-tags name=hashicorp/terraform
 ENV TERRAFORM_VERSION="1.5.5"
 
-# renovate: datasource=github-tags name=github.com/bazelbuild/bazelisk
+# renovate: datasource=github-tags name=bazelbuild/bazelisk
 ENV BAZELISK_VERSION="1.18.0"
 
-# renovate: datasource=github-tags name=github.com/kubernetes/kubernetes
+# renovate: datasource=github-tags name=kubernetes/kubernetes
 ENV KUBECTL_VERSION="1.28.0"
 
-# renovate: datasource=github-tags name=github.com/helm/helm
+# renovate: datasource=github-tags name=helm/helm
 ENV HELM_VERSION="3.12.3"
 
 RUN set -eux; \

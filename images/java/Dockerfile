@@ -24,10 +24,10 @@ FROM ghcr.io/auguwu/coder-images/base
 ENV USERNAME=noel
 USER root
 
-# renovate: datasource=github-tags name=github.com/gradle/gradle
+# renovate: datasource=github-tags name=gradle/gradle
 ENV GRADLE_VERSION="8.3"
 
-# renovate: datasource=github-tags name=github.com/apache/maven
+# renovate: datasource=github-tags name=apache/maven
 ENV MAVEN_VERSION="3.9.4"
 
 RUN DEBIAN_FRONTEND="noninteractive" apt install -y wget libarchive-tools

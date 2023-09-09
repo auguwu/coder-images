@@ -25,7 +25,7 @@ ENV USERNAME=noel
 
 USER root
 
-# renovate: datasource=github-tags name=github.com/oven-sh/bun
+# renovate: datasource=github-tags name=oven-sh/bun
 ENV BUN_VERSION="0.7.3"
 
 RUN set -eux;                                                                                                              \
