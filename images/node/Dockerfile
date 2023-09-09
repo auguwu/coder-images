@@ -32,10 +32,10 @@ RUN set -eux;                                                                   
     arch="$(dpkg --print-architecture)";                                                                           \
     case "${arch}" in                                                                                              \
         aarch64|arm64)                                                                                             \
-            NODE_DOWNLOAD_URL="https://nodejs.org/dist/v${NODE_VERSION}/node-${NODE_VERSION}-linux-arm64.tar.xz"; \
+            NODE_DOWNLOAD_URL="https://nodejs.org/dist/${NODE_VERSION}/node-${NODE_VERSION}-linux-arm64.tar.xz"; \
             ;;                                                                                                     \
         amd64|x86_64)                                                                                              \
-            NODE_DOWNLOAD_URL="https://nodejs.org/dist/v${NODE_VERSION}/node-${NODE_VERSION}-linux-x64.tar.xz";   \
+            NODE_DOWNLOAD_URL="https://nodejs.org/dist/${NODE_VERSION}/node-${NODE_VERSION}-linux-x64.tar.xz";   \
             ;;                                                                                                     \
     esac;                                                                                                          \
     mkdir -p /opt/nodejs;                                                                                          \
