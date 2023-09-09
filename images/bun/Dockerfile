@@ -32,10 +32,10 @@ RUN set -eux;                                                                   
     arch="$(dpkg --print-architecture)";                                                                                   \
     case "${arch}" in                                                                                                      \
         aarch64|arm64)                                                                                                     \
-            BUN_DOWNLOAD_URL="https://github.com/oven-sh/bun/releases/download/bun-v${BUN_VERSION}/bun-linux-aarch64.zip"; \
+            BUN_DOWNLOAD_URL="https://github.com/oven-sh/bun/releases/download/bun-${BUN_VERSION}/bun-linux-aarch64.zip";  \
             ;;                                                                                                             \
         amd64|x86_64)                                                                                                      \
-            BUN_DOWNLOAD_URL="https://github.com/oven-sh/bun/releases/download/bun-v${BUN_VERSION}/bun-linux-x64.zip";     \
+            BUN_DOWNLOAD_URL="https://github.com/oven-sh/bun/releases/download/bun-${BUN_VERSION}/bun-linux-x64.zip";      \
             ;;                                                                                                             \
     esac;                                                                                                                  \
     mkdir -p /opt/oven/bun;                                                                                                \

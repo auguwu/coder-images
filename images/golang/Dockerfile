@@ -39,14 +39,14 @@ RUN set -eux; \
     aarch64|arm64) \
       ARCH="arm64"; \
       GO_DOWNLOAD_URL="https://go.dev/dl/go${GOLANG_VERSION}.linux-arm64.tar.gz" \
-      GORELEASER_DOWNLOAD_URL="https://github.com/goreleaser/goreleaser/releases/download/v${GORELEASER_VERSION}/goreleaser_Linux_arm64.tar.gz" \
-      GOLANGCI_DOWNLOAD_URL="https://github.com/golangci/golangci-lint/releases/download/v${GOLANGCI_VERSION}/golangci-lint-${GOLANGCI_VERSION}-linux-arm64.tar.gz" \
+      GORELEASER_DOWNLOAD_URL="https://github.com/goreleaser/goreleaser/releases/download/${GORELEASER_VERSION}/goreleaser_Linux_arm64.tar.gz" \
+      GOLANGCI_DOWNLOAD_URL="https://github.com/golangci/golangci-lint/releases/download/${GOLANGCI_VERSION}/golangci-lint-${GOLANGCI_VERSION}-linux-arm64.tar.gz" \
       ;; \
     x86_64|amd64) \
       ARCH="amd64"; \
       GO_DOWNLOAD_URL="https://go.dev/dl/go${GOLANG_VERSION}.linux-amd64.tar.gz" \
-      GORELEASER_DOWNLOAD_URL="https://github.com/goreleaser/goreleaser/releases/download/v${GORELEASER_VERSION}/goreleaser_Linux_x86_64.tar.gz" \
-      GOLANGCI_DOWNLOAD_URL="https://github.com/golangci/golangci-lint/releases/download/v${GOLANGCI_VERSION}/golangci-lint-${GOLANGCI_VERSION}-linux-amd64.tar.gz" \
+      GORELEASER_DOWNLOAD_URL="https://github.com/goreleaser/goreleaser/releases/download/${GORELEASER_VERSION}/goreleaser_Linux_x86_64.tar.gz" \
+      GOLANGCI_DOWNLOAD_URL="https://github.com/golangci/golangci-lint/releases/download/${GOLANGCI_VERSION}/golangci-lint-${GOLANGCI_VERSION}-linux-amd64.tar.gz" \
       ;; \
   esac; \
   mkdir -p /opt/golang/go /opt/golang/tools/golangci /opt/golang/tools/goreleaser; \
