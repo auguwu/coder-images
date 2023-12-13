@@ -66,7 +66,7 @@ ENV TERRAFORM_VERSION="1.5.5"
 ENV BAZELISK_VERSION="1.18.0"
 
 # renovate: datasource=github-tags name=kubernetes/kubernetes
-ENV KUBECTL_VERSION="1.28.0"
+ENV KUBECTL_VERSION="v1.29.0"
 
 # renovate: datasource=github-tags name=helm/helm
 ENV HELM_VERSION="3.12.3"
