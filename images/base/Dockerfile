@@ -60,7 +60,7 @@ ENV GITHUB_CLI_VERSION="2.32.0"
 ENV CODER_CLI_VERSION="2.1.0"
 
 # renovate: datasource=github-tags name=hashicorp/terraform
-ENV TERRAFORM_VERSION="1.5.5"
+ENV TERRAFORM_VERSION="v1.6.6"
 
 # renovate: datasource=github-tags name=bazelbuild/bazelisk
 ENV BAZELISK_VERSION="1.18.0"
