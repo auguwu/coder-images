@@ -57,7 +57,7 @@ ENV BAZEL_BUILDTOOLS_VERSION="v6.3.3"
 ENV GITHUB_CLI_VERSION="2.32.0"
 
 # renovate: datasource=github-tags name=coder/coder
-ENV CODER_CLI_VERSION="2.1.0"
+ENV CODER_CLI_VERSION="v2.6.0"
 
 # renovate: datasource=github-tags name=hashicorp/terraform
 ENV TERRAFORM_VERSION="1.5.5"
