@@ -28,7 +28,7 @@ USER root
 ENV RUSTUP_VERSION="1.26.0"
 
 # renovate: datasource=github-tags name=rust-lang/rust
-ENV RUST_VERSION="1.71.1"
+ENV RUST_VERSION="1.75.0"
 
 RUN apt install -y --no-install-recommends ca-certificates gcc libc6-dev
 USER ${USERNAME}
