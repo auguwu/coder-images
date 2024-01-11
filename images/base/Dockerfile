@@ -54,7 +54,7 @@ RUN usermod -aG docker ${USERNAME}
 ENV BAZEL_BUILDTOOLS_VERSION="v6.3.3"
 
 # renovate: datasource=github-tags name=cli/cli
-ENV GITHUB_CLI_VERSION="2.32.0"
+ENV GITHUB_CLI_VERSION="v2.42.0"
 
 # renovate: datasource=github-tags name=coder/coder
 ENV CODER_CLI_VERSION="2.1.0"
