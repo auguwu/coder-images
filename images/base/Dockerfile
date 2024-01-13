@@ -106,7 +106,7 @@ RUN set -eux; \
   curl -fsSL -o /usr/local/bin/bazel             ${BAZELISK_DOWNLOAD_URL}; \
   curl -fsSL -o /usr/local/bin/bazel-buildifier  ${BAZEL_BUILDIFIER_DOWNLOAD_URL}; \
   curl -fsSL -o /usr/local/bin/bazel-buildozer   ${BAZEL_BUILDOZER_DOWNLOAD_URL}; \
-  curl -fsSL -o /usr/local/bin/bazel-unused-deps ${BAZEL_UNUSED_DEPS_DOWNLOAD_URL};
+  curl -fsSL -o /usr/local/bin/bazel-unused-deps ${BAZEL_UNUSED_DEPS_DOWNLOAD_URL}
 
 RUN chmod +x /usr/local/bin/kubectl /usr/local/bin/bazel /usr/local/bin/bazel-* /opt/hashicorp/terraform/terraform
 
