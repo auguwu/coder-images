@@ -2,8 +2,8 @@
 This image extends from the [base image](https://github.com/auguwu/coder-images/pkgs/container/coder-images%2Fbase) that includes [Bun](https://bun.sh) to develop from.
 
 ## Bundled Software
-| Name  | Description                                                                                | Version        |
-| ----- | ------------------------------------------------------------------------------------------ | -------------- |
-| `bun` | Incredibly fast JavaScript runtime, bundler, test runner, and package manager – all in one | [v0.7.3][bun]  |
+| Name  | Description                                                                                | Version         |
+| ----- | ------------------------------------------------------------------------------------------ | --------------- |
+| `bun` | Incredibly fast JavaScript runtime, bundler, test runner, and package manager – all in one | [v1.0.22][bun]  |
 
-[bun]: https://github.com/oven-sh/bun/releases/tag/bun-v0.7.3
+[bun]: https://github.com/oven-sh/bun/releases/tag/bun-v1.0.22

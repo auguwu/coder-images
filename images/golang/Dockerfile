@@ -1,5 +1,5 @@
 # 💐💚 coder-images: Optimized, and easy Docker images and Coder templates to use in your everyday work!
-# Copyright (c) 2022-2023 Noel Towa <cutie@floofy.dev>
+# Copyright (c) 2022-2024 Noel Towa <cutie@floofy.dev>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -25,34 +25,34 @@ ENV USERNAME=noel
 USER root
 
 # renovate: datasource=github-tags name=golang/go
-ENV GOLANG_VERSION="1.21.0"
+ENV GOLANG_VERSION="1.21.6"
 
 # renovate: datasource=github-tags name=goreleaser/goreleaser
-ENV GORELEASER_VERSION="1.20.0"
+ENV GORELEASER_VERSION="1.23.0"
 
 # renovate: datasource=github-tags name=golangci/golangci-lint
-ENV GOLANGCI_VERSION="1.54.2"
+ENV GOLANGCI_VERSION="1.55.2"
 
 RUN set -eux; \
-  arch="$(dpkg --print-architecture)"; \
-  case "${arch}" in \
-    aarch64|arm64) \
-      ARCH="arm64"; \
-      GO_DOWNLOAD_URL="https://go.dev/dl/go${GOLANG_VERSION}.linux-arm64.tar.gz" \
-      GORELEASER_DOWNLOAD_URL="https://github.com/goreleaser/goreleaser/releases/download/${GORELEASER_VERSION}/goreleaser_Linux_arm64.tar.gz" \
-      GOLANGCI_DOWNLOAD_URL="https://github.com/golangci/golangci-lint/releases/download/${GOLANGCI_VERSION}/golangci-lint-${GOLANGCI_VERSION}-linux-arm64.tar.gz" \
-      ;; \
-    x86_64|amd64) \
-      ARCH="amd64"; \
-      GO_DOWNLOAD_URL="https://go.dev/dl/go${GOLANG_VERSION}.linux-amd64.tar.gz" \
-      GORELEASER_DOWNLOAD_URL="https://github.com/goreleaser/goreleaser/releases/download/${GORELEASER_VERSION}/goreleaser_Linux_x86_64.tar.gz" \
-      GOLANGCI_DOWNLOAD_URL="https://github.com/golangci/golangci-lint/releases/download/${GOLANGCI_VERSION}/golangci-lint-${GOLANGCI_VERSION}-linux-amd64.tar.gz" \
-      ;; \
-  esac; \
-  mkdir -p /opt/golang/go /opt/golang/tools/golangci /opt/golang/tools/goreleaser; \
-  curl -L ${GO_DOWNLOAD_URL}         | tar xfz - -C /opt/golang/go --strip-components=1 --no-same-owner; \
-  curl -L ${GORELEASER_DOWNLOAD_URL} | tar xfz - -C /opt/golang/tools/goreleaser --no-same-owner; \
-  curl -L ${GOLANGCI_DOWNLOAD_URL}   | tar xfz - -C /opt/golang/tools/golangci --strip-components 1 --no-same-owner;
+    arch="$(dpkg --print-architecture)"; \
+    case "${arch}" in \
+        aarch64|arm64) \
+            ARCH="arm64"; \
+            GO_DOWNLOAD_URL="https://go.dev/dl/go${GOLANG_VERSION}.linux-arm64.tar.gz" \
+            GORELEASER_DOWNLOAD_URL="https://github.com/goreleaser/goreleaser/releases/download/v${GORELEASER_VERSION}/goreleaser_Linux_arm64.tar.gz" \
+            GOLANGCI_DOWNLOAD_URL="https://github.com/golangci/golangci-lint/releases/download/v${GOLANGCI_VERSION}/golangci-lint-${GOLANGCI_VERSION}-linux-arm64.tar.gz" \
+        ;; \
+        x86_64|amd64) \
+            ARCH="amd64"; \
+            GO_DOWNLOAD_URL="https://go.dev/dl/go${GOLANG_VERSION}.linux-amd64.tar.gz" \
+            GORELEASER_DOWNLOAD_URL="https://github.com/goreleaser/goreleaser/releases/download/v${GORELEASER_VERSION}/goreleaser_Linux_x86_64.tar.gz" \
+            GOLANGCI_DOWNLOAD_URL="https://github.com/golangci/golangci-lint/releases/download/v${GOLANGCI_VERSION}/golangci-lint-${GOLANGCI_VERSION}-linux-amd64.tar.gz" \
+            ;; \
+    esac; \
+    mkdir -p /opt/golang/go /opt/golang/tools/golangci /opt/golang/tools/goreleaser; \
+    curl -L ${GO_DOWNLOAD_URL}         | tar xfz - -C /opt/golang/go --strip-components=1 --no-same-owner; \
+    curl -L ${GORELEASER_DOWNLOAD_URL} | tar xfz - -C /opt/golang/tools/goreleaser --no-same-owner; \
+    curl -L ${GOLANGCI_DOWNLOAD_URL}   | tar xfz - -C /opt/golang/tools/golangci --strip-components 1 --no-same-owner;
 
 USER ${USERNAME}
 

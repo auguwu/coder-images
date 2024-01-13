@@ -1,5 +1,5 @@
 # 💐💚 coder-images: Optimized, and easy Docker images and Coder templates to use in your everyday work!
-# Copyright (c) 2022-2023 Noel Towa <cutie@floofy.dev>
+# Copyright (c) 2022-2024 Noel Towa <cutie@floofy.dev>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -19,57 +19,57 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-FROM ubuntu:lunar
+FROM ubuntu:mantic
 
 # For now, this will be `noel` as the user. You can extend this to be whatever you like.
 ENV USERNAME=noel \
-  USER_UID=1001 \
-  USER_GID=1001
+    USER_UID=1001 \
+    USER_GID=1001
 
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Install needed packages
 RUN apt update && \
-  apt upgrade -y && \
-  apt install -y sudo git curl neofetch git-lfs ca-certificates \
+    apt upgrade -y && \
+    apt install -y sudo git curl neofetch git-lfs ca-certificates \
                 unzip zip bash vim nano python3 python3-pip libarchive-tools gnupg lsb-release pkg-config \
                 libssl-dev tree htop jq zsh ripgrep exa bat protobuf-compiler xz-utils
 
 RUN groupadd -g ${USER_GID} ${USERNAME} && \
-  useradd -rm -d /home/${USERNAME} -s /bin/bash -g ${USERNAME} -u ${USER_UID} ${USERNAME} && \
-  echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME && \
-  chown ${USER_UID}:${USER_GID} /home/${USERNAME}
+    useradd -rm -d /home/${USERNAME} -s /bin/bash -g ${USERNAME} -u ${USER_UID} ${USERNAME} && \
+    echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME && \
+    chown ${USER_UID}:${USER_GID} /home/${USERNAME}
 
 RUN git lfs install --system
 RUN mkdir -p /etc/apt/keyrings && \
-  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg && \
-  echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg && \
+    echo \
+    "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+    $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
 RUN apt update && apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
 RUN usermod -aG docker ${USERNAME}
 
 # renovate: datasource=github-tags name=bazelbuild/buildtools
-ENV BAZEL_BUILDTOOLS_VERSION="v6.3.3"
+ENV BAZEL_BUILDTOOLS_VERSION="v6.4.0"
 
 # renovate: datasource=github-tags name=cli/cli
-ENV GITHUB_CLI_VERSION="2.32.0"
+ENV GITHUB_CLI_VERSION="2.42.0"
 
 # renovate: datasource=github-tags name=coder/coder
-ENV CODER_CLI_VERSION="2.1.0"
+ENV CODER_CLI_VERSION="2.6.0"
 
 # renovate: datasource=github-tags name=hashicorp/terraform
-ENV TERRAFORM_VERSION="1.5.5"
+ENV TERRAFORM_VERSION="1.6.6"
 
 # renovate: datasource=github-tags name=bazelbuild/bazelisk
-ENV BAZELISK_VERSION="1.18.0"
+ENV BAZELISK_VERSION="1.19.0"
 
 # renovate: datasource=github-tags name=kubernetes/kubernetes
-ENV KUBECTL_VERSION="1.28.0"
+ENV KUBECTL_VERSION="1.29.0"
 
 # renovate: datasource=github-tags name=helm/helm
-ENV HELM_VERSION="3.12.3"
+ENV HELM_VERSION="v3.13.3"
 
 RUN set -eux; \
   arch="$(dpkg --print-architecture)"; \
@@ -78,21 +78,21 @@ RUN set -eux; \
       BAZEL_UNUSED_DEPS_DOWNLOAD_URL="https://github.com/bazelbuild/buildtools/releases/download/${BAZEL_BUILDTOOLS_VERSION}/unused_deps-linux-arm64"; \
       BAZEL_BUILDIFIER_DOWNLOAD_URL="https://github.com/bazelbuild/buildtools/releases/download/${BAZEL_BUILDTOOLS_VERSION}/buildifier-linux-arm64"; \
       BAZEL_BUILDOZER_DOWNLOAD_URL="https://github.com/bazelbuild/buildtools/releases/download/${BAZEL_BUILDTOOLS_VERSION}/buildozer-linux-arm64"; \
-      GITHUB_CLI_DOWNLOAD_URL="https://github.com/cli/cli/releases/download/GITHUB_CLI_VERSION}/gh_${GITHUB_CLI_VERSION}_linux_arm64.tar.gz"; \
+      GITHUB_CLI_DOWNLOAD_URL="https://github.com/cli/cli/releases/download/v${GITHUB_CLI_VERSION}/gh_${GITHUB_CLI_VERSION}_linux_arm64.tar.gz"; \
       TERRAFORM_DOWNLOAD_URL="https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_arm64.zip"; \
       BAZELISK_DOWNLOAD_URL="https://github.com/bazelbuild/bazelisk/releases/download/${BAZELISK_VERSION}/bazelisk-linux-arm64"; \
       KUBECTL_DOWNLOAD_URL="https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/arm64/kubectl"; \
-      CODER_DOWNLOAD_URL="https://github.com/coder/coder/releases/download/${CODER_CLI_VERSION}/coder_${CODER_CLI_VERSION}_linux_arm64.tar.gz"; \
+      CODER_DOWNLOAD_URL="https://github.com/coder/coder/releases/download/v${CODER_CLI_VERSION}/coder_${CODER_CLI_VERSION}_linux_arm64.tar.gz"; \
       HELM_DOWNLOAD_URL="https://get.helm.sh/helm-${HELM_VERSION}-linux-arm64.tar.gz"; \
       ;; \
     amd64|x86_64) \
       BAZEL_UNUSED_DEPS_DOWNLOAD_URL="https://github.com/bazelbuild/buildtools/releases/download/${BAZEL_BUILDTOOLS_VERSION}/unused_deps-linux-amd64"; \
       BAZEL_BUILDIFIER_DOWNLOAD_URL="https://github.com/bazelbuild/buildtools/releases/download/${BAZEL_BUILDTOOLS_VERSION}/buildifier-linux-amd64"; \
       BAZEL_BUILDOZER_DOWNLOAD_URL="https://github.com/bazelbuild/buildtools/releases/download/${BAZEL_BUILDTOOLS_VERSION}/buildozer-linux-amd64"; \
-      GITHUB_CLI_DOWNLOAD_URL="https://github.com/cli/cli/releases/download/${GITHUB_CLI_VERSION}/gh_${GITHUB_CLI_VERSION}_linux_amd64.tar.gz" \
+      GITHUB_CLI_DOWNLOAD_URL="https://github.com/cli/cli/releases/download/v${GITHUB_CLI_VERSION}/gh_${GITHUB_CLI_VERSION}_linux_amd64.tar.gz" \
       TERRAFORM_DOWNLOAD_URL="https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" \
-      BAZELISK_DOWNLOAD_URL="https://github.com/bazelbuild/bazelisk/releases/download/${BAZELISK_VERSION}/bazelisk-linux-amd64"; \
-      CODER_DOWNLOAD_URL="https://github.com/coder/coder/releases/download/${CODER_CLI_VERSION}/coder_${CODER_CLI_VERSION}_linux_amd64.tar.gz" \
+      BAZELISK_DOWNLOAD_URL="https://github.com/bazelbuild/bazelisk/releases/download/v${BAZELISK_VERSION}/bazelisk-linux-amd64"; \
+      CODER_DOWNLOAD_URL="https://github.com/coder/coder/releases/download/v${CODER_CLI_VERSION}/coder_${CODER_CLI_VERSION}_linux_amd64.tar.gz" \
       KUBECTL_DOWNLOAD_URL="https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl"; \
       HELM_DOWNLOAD_URL="https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz"; \
       ;; \

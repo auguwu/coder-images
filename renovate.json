@@ -6,12 +6,5 @@
     "timezone": "America/Los_Angeles",
     "vulnerabilityAlerts": {
         "labels": ["security"]
-    },
-    "regexManagers": [
-        {
-            "description": "Allow updating software versions in Dockerfiles",
-            "fileMatch": ["Dockerfile$"],
-            "matchStrings": ["datasource=(?<datasource>.*?) name=(?<depName>.*?)\\sENV \\w+_VERSION=\"(?<currentValue>.*)\""]
-        }
-    ]
+    }
 }

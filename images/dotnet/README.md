@@ -4,6 +4,6 @@ This image extends from the [base image](https://github.com/auguwu/coder-images/
 ## Bundled Software
 | Name     | Description                                                | Version                |
 | -------- | ---------------------------------------------------------- | ---------------------- |
-| .NET SDK | Free. Cross-platform. Open source. Build any app with .NET | [v7.0.10][dotnet-sdk]   |
+| .NET SDK | Free. Cross-platform. Open source. Build any app with .NET | [v8.0.1][dotnet-sdk]   |
 
-[dotnet-sdk]: https://github.com/dotnet/sdk/releases/tag/v7.0.400
+[dotnet-sdk]: https://github.com/dotnet/sdk/releases/tag/v8.0.101

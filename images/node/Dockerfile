@@ -1,5 +1,5 @@
 # 💐💚 coder-images: Optimized, and easy Docker images and Coder templates to use in your everyday work!
-# Copyright (c) 2022-2023 Noel Towa <cutie@floofy.dev>
+# Copyright (c) 2022-2024 Noel Towa <cutie@floofy.dev>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -26,7 +26,7 @@ ENV USERNAME=noel
 USER root
 
 # renovate: datasource=github-tags name=nodejs/node
-ENV NODE_VERSION="v20.6.1"
+ENV NODE_VERSION="v21.5.0"
 
 RUN set -eux;                                                                                                      \
     arch="$(dpkg --print-architecture)";                                                                           \

@@ -1,5 +1,5 @@
 # 💐💚 coder-images: Optimized, and easy Docker images and Coder templates to use in your everyday work!
-# Copyright (c) 2022-2023 Noel Towa <cutie@floofy.dev>
+# Copyright (c) 2022-2024 Noel Towa <cutie@floofy.dev>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,26 +22,26 @@
 FROM ghcr.io/auguwu/coder-images/base
 
 ENV USERNAME=noel
-ENV DOTNET_VERSION=7.0.400
+ENV DOTNET_VERSION=8.0.101
 ENV DEBIAN_FRONTEND=noninteractive
-ENV X64_PR="dbfe6cc7-dd82-4cec-b267-31ed988b1652/c60ab4793c3714be878abcb9aa834b63"
-ENV ARM_PR="16b0b1af-6eab-4f9e-b9a4-9b29f6a1d681/4624e54b61cae05b1025211482f9c5e9"
+ENV X64_PR="9454f7dc-b98e-4a64-a96d-4eb08c7b6e66/da76f9c6bc4276332b587b771243ae34"
+ENV ARM_PR="092bec24-9cad-421d-9b43-458b3a7549aa/84280dbd1eef750f9ed1625339235c22"
 
 USER root
 
 RUN apt update && apt install -y build-essential zlib1g openssl
 RUN set -eux;                         \
-  arch="$(dpkg --print-architecture)"; \
-  case "${arch}" in                   \
-    aarch64|arm64)                    \
-      DOTNET_DOWNLOAD_URL="https://download.visualstudio.microsoft.com/download/pr/${ARM_PR}/dotnet-sdk-${DOTNET_VERSION}-linux-arm64.tar.gz"; \
-      ;; \
-    amd64|x86_64) \
-      DOTNET_DOWNLOAD_URL="https://download.visualstudio.microsoft.com/download/pr/${X64_PR}/dotnet-sdk-${DOTNET_VERSION}-linux-x64.tar.gz"; \
-      ;; \
+    arch="$(dpkg --print-architecture)"; \
+    case "${arch}" in                   \
+        aarch64|arm64)                    \
+            DOTNET_DOWNLOAD_URL="https://download.visualstudio.microsoft.com/download/pr/${ARM_PR}/dotnet-sdk-${DOTNET_VERSION}-linux-arm64.tar.gz"; \
+            ;; \
+        amd64|x86_64) \
+            DOTNET_DOWNLOAD_URL="https://download.visualstudio.microsoft.com/download/pr/${X64_PR}/dotnet-sdk-${DOTNET_VERSION}-linux-x64.tar.gz"; \
+            ;; \
     esac; \
-  mkdir -p /opt/dotnet; \
-  curl -L ${DOTNET_DOWNLOAD_URL} | tar xfz - -C /opt/dotnet --strip-components=1;
+    mkdir -p /opt/dotnet; \
+    curl -L ${DOTNET_DOWNLOAD_URL} | tar xfz - -C /opt/dotnet --strip-components=1;
 
 USER ${USERNAME}
 ENV PATH=$PATH:/opt/dotnet

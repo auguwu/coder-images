@@ -1,5 +1,5 @@
 # 💐💚 coder-images: Optimized, and easy Docker images and Coder templates to use in your everyday work!
-# Copyright (c) 2022-2023 Noel Towa <cutie@floofy.dev>
+# Copyright (c) 2022-2024 Noel Towa <cutie@floofy.dev>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -25,28 +25,27 @@ ENV USERNAME=noel
 USER root
 
 # renovate: datasource=github-tags name=gradle/gradle
-ENV GRADLE_VERSION="8.3"
+ENV GRADLE_VERSION="8.5"
 
 # renovate: datasource=github-tags name=apache/maven
-ENV MAVEN_VERSION="3.9.4"
+ENV MAVEN_VERSION="3.9.6"
 
 RUN DEBIAN_FRONTEND="noninteractive" apt install -y wget libarchive-tools
 RUN wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | sudo apt-key add -
 
-# force it to use the Kinetic repository until it supports 23.04
+# force it to use the Kinetic repository until it supports Mantic
 RUN echo "deb https://packages.adoptium.net/artifactory/deb kinetic main" | sudo tee /etc/apt/sources.list.d/adoptium.list
 RUN DEBIAN_FRONTEND="noninteractive" apt update && \
-  DEBIAN_FRONTEND="noninteractive" apt install -y temurin-20-jdk
+    DEBIAN_FRONTEND="noninteractive" apt install -y temurin-20-jdk
 
 RUN GRADLE_DOWNLOAD_URL="https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-all.zip"; \
-  MAVEN_DOWNLOAD_URL="https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz"; \
-  mkdir -p /opt/gradle; \
-  mkdir -p /opt/maven; \
-  curl -L ${MAVEN_DOWNLOAD_URL}   | tar xfz - -C /opt/maven --strip-components=1; \
-  curl -L ${GRADLE_DOWNLOAD_URL}  | bsdtar xfz - --strip-components=1 -C /opt/gradle;
+    MAVEN_DOWNLOAD_URL="https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz"; \
+    mkdir -p /opt/gradle; \
+    mkdir -p /opt/maven; \
+    curl -L ${MAVEN_DOWNLOAD_URL}   | tar xfz - -C /opt/maven --strip-components=1; \
+    curl -L ${GRADLE_DOWNLOAD_URL}  | bsdtar xfz - --strip-components=1 -C /opt/gradle;
 
 RUN chmod +x /opt/gradle/bin/gradle
 
 USER ${USERNAME}
-
 ENV PATH=$PATH:/opt/maven/bin:/opt/gradle/bin

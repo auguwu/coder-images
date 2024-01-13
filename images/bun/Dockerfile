@@ -1,5 +1,5 @@
 # 💐💚 coder-images: Optimized, and easy Docker images and Coder templates to use in your everyday work!
-# Copyright (c) 2022-2023 Noel Towa <cutie@floofy.dev>
+# Copyright (c) 2022-2024 Noel Towa <cutie@floofy.dev>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -26,16 +26,16 @@ ENV USERNAME=noel
 USER root
 
 # renovate: datasource=github-tags name=oven-sh/bun
-ENV BUN_VERSION="0.7.3"
+ENV BUN_VERSION="1.0.22"
 
 RUN set -eux;                                                                                                              \
     arch="$(dpkg --print-architecture)";                                                                                   \
     case "${arch}" in                                                                                                      \
         aarch64|arm64)                                                                                                     \
-            BUN_DOWNLOAD_URL="https://github.com/oven-sh/bun/releases/download/bun-${BUN_VERSION}/bun-linux-aarch64.zip";  \
+            BUN_DOWNLOAD_URL="https://github.com/oven-sh/bun/releases/download/bun-v${BUN_VERSION}/bun-linux-aarch64.zip";  \
             ;;                                                                                                             \
         amd64|x86_64)                                                                                                      \
-            BUN_DOWNLOAD_URL="https://github.com/oven-sh/bun/releases/download/bun-${BUN_VERSION}/bun-linux-x64.zip";      \
+            BUN_DOWNLOAD_URL="https://github.com/oven-sh/bun/releases/download/bun-v${BUN_VERSION}/bun-linux-x64.zip";      \
             ;;                                                                                                             \
     esac;                                                                                                                  \
     mkdir -p /opt/oven/bun;                                                                                                \
