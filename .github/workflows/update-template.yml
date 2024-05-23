@@ -39,7 +39,7 @@ jobs:
               run: echo "hash=$(git rev-parse --short=8 HEAD)" >> $GITHUB_OUTPUT
 
             - name: Update Coder template!
-              uses: matifali/update-coder-template@v2
+              uses: matifali/update-coder-template@v3
               with:
                 CODER_TEMPLATE_VERSION: "${{steps.commit.outputs.hash}}"
                 CODER_SESSION_TOKEN: "${{secrets.CODER_TOKEN}}"
